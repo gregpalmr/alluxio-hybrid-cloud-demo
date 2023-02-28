@@ -185,12 +185,72 @@ Point your web browser to the "cloud compute" cluster's master node and display 
 Point your web browser to the "cloud compute" cluster's master node and display the Presto web UI:
 
      http://ec2-18-212-208-181.compute-1.amazonaws.com:8889
-     
+
+## Step 9. Re-run the Presto TPD-DS Q44 Query
+
+Run the Presto query again, so we can compare the cold cache vs warm cache performance. Use this command on the "CLOUD COMPUTE" shell session:
+
+          presto-cli --catalog onprem --schema default < q44.sql
+
 # Demo Presentation Instructions
 
 ## Step 1. Show Alluxio Unified Namespace
 
 TBD
+
+## Step 2. TBD
+
+## Step 3. Setup an Alluxio policy driven data management rule (PDDM)
+
+Copy data from the hdfs_mount to the s3_mount, when a file is older than 1 minute:
+
+     alluxio fs policy add /alluxio_union_mount "migrate_from_hdfs_to_cloud:ufsMigrate(olderThan(1m), UFS[s3_mount]:STORE)"
+
+Copy data from the hdfs_mount to the s3_mount, when a file is older than 3 days:
+
+     alluxio fs policy add /union_mount "migrate_from_hdfs_to_cloud:ufsMigrate(olderThan(3d), UFS[s3_mount]:STORE)"
+
+Copy data from the hdfs_mount to the s3_mount, when a file is unused for 3 days:
+
+     alluxio fs policy add /alluxio_union_mount "migrate_from_hdfs_to_cloud:ufsMigrate(unusedFor(3d), UFS[s3_mount]:STORE)"
+
+Add a new file directly on the UFS (on the ONPREM STORAGE environment)
+
+     hdfs dfs -put /etc/motd hdfs:///tmp/motd2
+     hdfs dfs -ls hdfs:///tmp/
+
+On the CLOUD COMPUTE environment, cause Alluxio to do a metadata sync
+
+     alluxio fs loadMetadata /
+
+# Step 4. Manage the policy
+
+See what the initial delay is for new policies (defaults to 5m), 
+
+     alluxio getConf alluxio.policy.scan.initial.delay
+     alluxio getConf alluxio.policy.scan.interval
+
+List all policies:
+
+     alluxio fs policy list
+
+Check the status of the s3 policy:
+
+     alluxio fs policy status migrate_from_hdfs_to_cloud
+
+Remove the policy
+
+     alluxio fs policy remove migrate_from_hdfs_to_cloud
+
+Remove the union filesystem mount
+
+     alluxio fs unmount /union_mount
+
+# Destroy the Demo Environment
+
+Use these commands to destroy the demo environment:
+
+     terraform destroy
 
 ---
 
