@@ -104,21 +104,21 @@ USAGE_END
   aws s3 cp /home/hadoop/core-site.xml ${upload_path}/core-site.xml
   aws s3 cp /home/hadoop/hdfs-site.xml ${upload_path}/hdfs-site.xml
 
-  if [[ "${is_master}" == "true" ]];then
-    echo "Loading tpcds data into hdfs"
-    sleep 5
-    hdfs dfs -mkdir -p /data/tpcds/
-    sleep 2
-    nohup s3-dist-cp --src s3a://autobots-tpcds-pregenerated-data/spark/unpart_sf100_10k/store_sales/ --dest hdfs:///data/tpcds/store_sales/ > /tmp/s3-dist-cp-store-sales.log 2>&1 &
-    
-    nohup s3-dist-cp --src s3a://autobots-tpcds-pregenerated-data/spark/unpart_sf100_10k/item/ --dest hdfs:///data/tpcds/item/ > /tmp/s3-dist-cp-item.log 2>&1 &
-
-    echo "Creating Hive tables"
-    sleep 30
-    wget https://alluxio-public.s3.amazonaws.com/hybrid-quickstart/create-table.sql
-    sed -i 's~/tmp/~/data/~g' create-table.sql
-    hive -f create-table.sql
-  fi
+  #if [[ "${is_master}" == "true" ]];then
+  #  echo "Loading tpcds data into hdfs"
+  #  sleep 5
+  #  hdfs dfs -mkdir -p /data/tpcds/
+  #  sleep 2
+  #  nohup s3-dist-cp --src s3a://autobots-tpcds-pregenerated-data/spark/unpart_sf100_10k/store_sales/ --dest hdfs:///data/tpcds/store_sales/ > /tmp/s3-dist-cp-store-sales.log 2>&1 &
+  #  
+  #  nohup s3-dist-cp --src s3a://autobots-tpcds-pregenerated-data/spark/unpart_sf100_10k/item/ --dest hdfs:///data/tpcds/item/ > /tmp/s3-dist-cp-item.log 2>&1 &
+  #
+  #  echo "Creating Hive tables"
+  #  sleep 30
+  #  wget https://alluxio-public.s3.amazonaws.com/hybrid-quickstart/create-table.sql
+  #  sed -i 's~/tmp/~/data/~g' create-table.sql
+  #  hive -f create-table.sql
+  #fi
 
 }
 
