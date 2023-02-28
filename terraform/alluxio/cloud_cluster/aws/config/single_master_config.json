@@ -1,0 +1,9 @@
+[
+  {
+    "Classification": "core-site",
+    "Properties": {
+      "hadoop.proxyuser.hdfs.hosts": "*",
+      "hadoop.proxyuser.hdfs.groups": "*"
+    }
+  }
+]
