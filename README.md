@@ -47,7 +47,7 @@ In the "Launch Demo" terminal tab, clone this git repo with the commands:
 
      git clone https://github.com/gregpalmr/alluxio-hybrid-cloud-demo
 
-     cd alluxio-hybrid-cloud-demo
+     cd alluxio-hybrid-cloud-demo/terraform/
 
 ## Step 3. Create SSH keys
 
