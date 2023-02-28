@@ -175,7 +175,23 @@ Finally, create a UNION mount in Alluxio that includes both the S3 and the HDFS 
 	--option alluxio-union.priority.read=hdfs_mount,s3_mount \
 	--option alluxio-union.collection.create=hdfs_mount \
 	/alluxio_union_mount union://union_mount_ufs/
-        
+
+## Step 9. Display the Alluxio and Presto Web UIs
+
+Point your web browser to the "cloud compute" cluster's master node and display the Alluxio web UI:
+
+     http://ec2-18-212-208-181.compute-1.amazonaws.com:19999
+     
+Point your web browser to the "cloud compute" cluster's master node and display the Presto web UI:
+
+     http://ec2-18-212-208-181.compute-1.amazonaws.com:8889
+     
+# Demo Presentation Instructions
+
+## Step 1. Show Alluxio Unified Namespace
+
+TBD
+
 ---
 
 Please direct questions or comments to greg.palmer@alluxio.com
