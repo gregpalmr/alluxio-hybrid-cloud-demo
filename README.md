@@ -167,13 +167,15 @@ Mount the "on-prem" HDFS as a separate mount point using the command:
 Finally, create a UNION mount in Alluxio that includes both the S3 and the HDFS under stores. Use this command:
 
      /opt/alluxio/bin/alluxio fs mount \
-			  --option alluxio-union.hdfs_mount.uri=hdfs://ip-79-109-9-240.us-west-1.compute.internal:8020/data \
-			  --option alluxio-union.hdfs_mount.option.alluxio.underfs.version=hadoop-3.2 \
-			  \
-			  --option alluxio-union.s3_mount.uri=s3://nyc-tlc/trip\ data/ \
-                       \
-			  --option alluxio-union.priority.read=hdfs_mount,s3_mount \
-			  --option alluxio-union.collection.create=hdfs_mount \
-			  /alluxio_union_mount union://union_mount_ufs/
+	--option alluxio-union.hdfs_mount.uri=hdfs://ip-79-109-9-240.us-west-1.compute.internal:8020/data \
+	--option alluxio-union.hdfs_mount.option.alluxio.underfs.version=hadoop-3.2 \
+		\
+	--option alluxio-union.s3_mount.uri=s3://nyc-tlc/trip\ data/ \
+                \
+	--option alluxio-union.priority.read=hdfs_mount,s3_mount \
+	--option alluxio-union.collection.create=hdfs_mount \
+	/alluxio_union_mount union://union_mount_ufs/
         
-        
+---
+
+Please direct questions or comments to greg.palmer@alluxio.com
