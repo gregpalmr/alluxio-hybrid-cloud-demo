@@ -104,12 +104,12 @@ Use the terraform cli to launch the Alluxio demo environment in AWS. Use the com
      
 When both the on-prem and cloud portions of the Alluxio demo environment are launched completely, you will see the public ip addresses of the main cluster nodes for each environment. It will look like this:
 
-      Apply complete! Resources: 46 added, 0 changed, 0 destroyed.
-
-      Outputs:
-
-      alluxio_compute_master_public_dns = "ec2-18-212-208-181.compute-1.amazonaws.com"
-      on_prem_master_public_dns = "ec2-54-183-19-251.us-west-1.compute.amazonaws.com"
+     Apply complete! Resources: 48 added, 0 changed, 0 destroyed.
+     
+     Outputs:
+     
+     ssh_to_CLOUD_master_node = "ssh hadoop@ec2-54-205-235-107.compute-1.amazonaws.com"
+     ssh_to_ONPREM_master_node = "ssh hadoop@ec2-54-176-16-121.us-west-1.compute.amazonaws.com"
 
 ## Step 6. Load data into the on-prem HDFS storage
 
