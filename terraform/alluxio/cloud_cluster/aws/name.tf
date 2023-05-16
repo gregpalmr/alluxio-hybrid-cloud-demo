@@ -16,7 +16,7 @@ resource "random_string" "name_presuffix" {
   length  = 6
   upper   = false
   lower   = true
-  number  = false
+  numeric  = false
   special = false
 }
 
