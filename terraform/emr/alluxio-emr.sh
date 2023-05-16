@@ -165,6 +165,236 @@ emr_install_alluxio() {
   echo "export PATH=$PATH:${ALLUXIO_HOME}/bin" | sudo tee /etc/profile.d/alluxio.sh
 }
 
+# Installs Prometheus to /opt/prometheus
+#
+# Args: NONE
+#
+install_prometheus_and_grafana() {
+
+  #
+  # Install Prometheus
+  prometheus_rel="2.44.0"
+  sudo useradd prometheus
+  curl -L -O \
+     https://github.com/prometheus/prometheus/releases/download/v${prometheus_rel}/prometheus-${prometheus_rel}.linux-amd64.tar.gz
+  sudo tar xvf prometheus-*.tar.gz -C /opt/
+  sudo ln -s /opt/prometheus-${prometheus_rel}.linux-amd64 /opt/prometheus
+  sudo ln -s /opt/prometheus/prometheus /usr/local/bin/prometheus
+  sudo ln -s /opt/prometheus/promtool /usr/local/bin/promtool
+  sudo mkdir -p /opt/prometheus/tsdb_storage
+  sudo chown -R prometheus:prometheus /opt/prometheus-${prometheus_rel}.linux-amd64
+  rm -rf prometheus-*.tar.gz
+
+  cat <<EOF | sudo tee /etc/systemd/system/prometheus-server.service
+[Unit]
+Description=Prometheus
+Documentation=https://prometheus.io/docs/introduction/overview/
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+Environment="GOMAXPROCS=4"
+User=prometheus
+Group=prometheus
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/usr/local/bin/prometheus \
+  --config.file=/opt/prometheus/prometheus.yml \
+  --storage.tsdb.path=/opt/prometheus/tsdb_storage \
+  --web.console.templates=/opt/prometheus/consoles \
+  --web.console.libraries=/opt/prometheus/console_libraries \
+  --web.listen-address=0.0.0.0:9090
+
+SyslogIdentifier=prometheus
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+  sudo systemctl daemon-reload
+
+  #
+  # Install Prometheus node_exporter to /usr/loca/bin/node_exporter
+  node_exp_rel="1.5.0"
+  curl -L -O https://github.com/prometheus/node_exporter/releases/download/v${node_exp_rel}/node_exporter-${node_exp_rel}.linux-amd64.tar.gz
+  tar xvf node_exporter-*linux-amd64.tar.gz
+  sudo cp node_exporter-*linux-amd64/node_exporter /usr/local/bin/
+  rm -rf node_exporter-*
+  cat <<EOF | sudo tee /etc/systemd/system/prometheus-node-exporter.service
+[Unit]
+Description=prometheus-node-exporter
+Documentation=https://github.com/prometheus/node_exporter
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=/usr/local/bin/node_exporter
+SyslogIdentifier=prometheus-node-exporter
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+  sudo systemctl daemon-reload
+
+  #
+  # Install Grafana to /opt/grafana
+  grafana_rel="2.43.0"
+  sudo yum -y update
+
+  cat <<EOF | sudo tee /etc/yum.repos.d/grafana.repo
+[grafana]
+name=grafana
+baseurl=https://packages.grafana.com/oss/rpm
+repo_gpgcheck=1
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.grafana.com/gpg.key
+sslverify=1
+sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+EOF
+
+  sudo yum -y install grafana
+  sudo systemctl daemon-reload
+
+}
+
+# Configure Prometheus and Grafana
+#
+# Args:
+#   $1: master - alluxio master hostname
+configure_prometheus_and_grafana() {
+  if [[ "$#" -ne "1" ]]; then
+    echo "Incorrect number of arguments passed into function configure_alluxio_general_properties, expecting 1"
+    exit 2
+  fi
+  master=$1
+
+  #
+  # Configure Prometheus for Alluxio
+  sudo mv /opt/prometheus/prometheus.yml /opt/prometheus/prometheus.yml.orig
+  cat <<EOF | sudo tee /opt/prometheus/prometheus.yml
+global:
+  scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      # - alertmanager:9093
+
+# A scrape configuration containing exactly one endpoint to scrape:
+scrape_configs:
+
+  - job_name: node
+    static_configs:
+    - targets: ['${master}:9100','ALLUXIO-NODE-1:9100','ALLUXIO-NODE-2:9100','ALLUXIO-NODE-3:9100']
+
+  - job_name: "alluxio_masters"
+    metrics_path: '/metrics/prometheus/'
+    static_configs:
+    - targets: [ '${master}:19999' ]
+
+  - job_name: "alluxio_workers"
+    metrics_path: '/metrics/prometheus/'
+    static_configs:
+    - targets: [ 'ALLUXIO-NODE-1:19999','ALLUXIO-NODE-2:19999','ALLUXIO-NODE-3:19999' ]
+EOF
+
+  #
+  # Configure Grafana for Alluxio
+
+  # Setup default Grafana data source as prometheus
+  cat <<EOF | sudo tee /etc/grafana/provisioning/datasources/default.yaml
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+EOF
+
+  cat <<EOF | sudo tee /etc/grafana/provisioning/datasources/datasources.yaml
+apiVersion: 1
+
+datasources:
+  # <string, required> name of the datasource. Required
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    orgId: 1
+    uid: 'KaXNuaQ7z'
+    url: 'http://localhost:9090'
+    user:
+    database:
+    basicAuth: false
+    basicAuthUser:
+    basicAuthPassword:
+    withCredentials:
+    isDefault: true
+    jsonData:
+      httpMethod: 'POST'
+      tlsAuth: false
+      tlsAuthWithCACert: false
+    secureJsonData:
+      tlsCACert: '...'
+      tlsClientCert: '...'
+      tlsClientKey: '...'
+      password:
+      basicAuthPassword:
+    version: 1
+    editable: false
+EOF
+
+  cat <<EOF | sudo tee /etc/grafana/provisioning/dashboards/default.yaml
+apiVersion: 1
+
+providers:
+  - name: Default    # A uniquely identifiable name for the provider
+    folder: Alluxio  # The folder where to place the dashboards
+    type: file
+    options:
+      path: /var/lib/grafana/alluxio_dashboards
+EOF
+
+  sudo mkdir -p /var/lib/grafana/alluxio_dashboards
+
+  # Copy pre-canned Alluxio summary dashboard to dashboard directory
+  curl -L -O \
+        https://raw.githubusercontent.com/gregpalmr/alluxio-hybrid-cloud-demo/main/resources/grafana/alluxio-summary-dashboard.json
+  sudo mv alluxio-summary-dashboard.json /var/lib/grafana/alluxio_dashboards/alluxio-overview-dashboard.json
+
+  # Start Prometheus and Grafana servers
+  echo "Starting Prometheus and Grafana servers"
+  mytest=$(cat /etc/systemd/system/prometheus-server.service)
+  if [ "$mytest" != "" ]; then
+    sudo systemctl enable prometheus-server
+    sudo systemctl start  prometheus-server
+  else
+    echo " Error: /etc/systemd/system/prometheus-server.service is empty, starting Prometheus manually"
+    sudo su - prometheus bash -c "cd /opt/prometheus; nohup /usr/local/bin/prometheus \
+       --config.file=/opt/prometheus/prometheus.yml \
+       --storage.tsdb.path=/opt/prometheus/tsdb_storage \
+       --web.console.templates=/opt/prometheus/consoles \
+       --web.console.libraries=/opt/prometheus/console_libraries \
+       --web.listen-address=0.0.0.0:9090 \
+       > /opt/prometheus/server.log 2>&1 &"
+  fi
+
+  sudo systemctl enable prometheus-node-exporter
+  sudo systemctl restart prometheus-node-exporter
+
+  sudo systemctl enable grafana-server
+  sudo systemctl start  grafana-server
+}
+
 # Waits for the corresponding hadoop process to be running
 #
 # Args:
@@ -666,6 +896,11 @@ USAGE_END
     exit 1
   fi
 
+  # collect instance information
+  local -r local_hostname=$(hostname -f)
+  local -r is_master=$(jq '.isMaster' /mnt/var/lib/info/instance.json)
+
+
   # self-invoke script as background task
   # this allows EMR to continue installing and launching applications
   # the script will wait until HDFS processes are running before continuing
@@ -677,6 +912,9 @@ USAGE_END
     if [[ ! -d "${ALLUXIO_HOME}" ]]; then
       echo "Installing Alluxio from tarball at ${alluxio_tarball}"
       emr_install_alluxio "${alluxio_tarball}"
+      if [[ "${is_master}" == "true" ]]; then
+        install_prometheus_and_grafana
+      fi
     fi
     download_user_files "${files_list}"
     expose_alluxio_client_jar
@@ -706,10 +944,6 @@ IN
   fi
   echo "Executing asynchronous"
 
-  # collect instance information
-  local -r local_hostname=$(hostname -f)
-  local -r is_master=$(jq '.isMaster' /mnt/var/lib/info/instance.json)
-
   # determine master hostname, different if on master vs worker
   local master
   if [[ "${is_master}" == "true" ]]; then
@@ -735,6 +969,11 @@ IN
   local -r use_mem=$(configure_alluxio_worker_storage_properties "${nvme_capacity_usage}")
   configure_alluxio_general_properties "${master}"
   configure_alluxio_hdfs_root_mount "${root_ufs_uri}" "${hdfs_version}"
+
+  # Configure Prometheus and Grafana
+  if [[ "${is_master}" == "true" ]]; then
+    configure_prometheus_and_grafana "${master}"
+  fi
 
   # configure kerberos
   if [[ "${is_krb}" == "true" ]]; then
