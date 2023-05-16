@@ -67,9 +67,20 @@ resource "aws_security_group" "alluxio" {
   dynamic "ingress" {
     for_each = length(var.alluxio_web_ui_rule_cidr_blocks) > 0 ? [""] : []
     content {
-      description = "Alluxio hub UI default port"
-      from_port   = 30077
-      to_port     = 30077
+      description = "Prometheus Web UI default port"
+      from_port   = 9000 
+      to_port     = 9000 
+      protocol    = "TCP"
+      cidr_blocks = var.alluxio_web_ui_rule_cidr_blocks
+    }
+  }
+
+  dynamic "ingress" {
+    for_each = length(var.alluxio_web_ui_rule_cidr_blocks) > 0 ? [""] : []
+    content {
+      description = "Grafana Web UI default port"
+      from_port   = 3000 
+      to_port     = 3000 
       protocol    = "TCP"
       cidr_blocks = var.alluxio_web_ui_rule_cidr_blocks
     }
