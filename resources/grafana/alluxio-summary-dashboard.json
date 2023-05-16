@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -22,18 +25,23 @@
   "fiscalYearStartMonth": 0,
   "gnetId": 13467,
   "graphTooltip": 0,
-  "iteration": 1683816937559,
+  "id": 2,
   "links": [],
   "liveNow": false,
   "panels": [
     {
-      "datasource": "${alluxio_datasource}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${alluxio_datasource}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -62,6 +70,8 @@
             }
           },
           "mappings": [],
+          "max": 100,
+          "min": 0,
           "thresholds": {
             "mode": "percentage",
             "steps": [
@@ -70,13 +80,14 @@
                 "value": null
               }
             ]
-          }
+          },
+          "unit": "percent"
         },
         "overrides": []
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 11,
         "x": 0,
         "y": 0
       },
@@ -85,32 +96,44 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
         {
+          "datasource": {
+            "uid": "${alluxio_datasource}"
+          },
+          "editorMode": "code",
           "exemplar": true,
-          "expr": "(Cluster_CacheHitRate{job=\"$masters\"}*100)",
+          "expr": "(Cluster_CacheHitRate{job=\"alluxio_masters\"}*100)",
           "interval": "",
           "legendFormat": "",
+          "range": true,
           "refId": "A"
         }
       ],
-      "title": "Cluster Cache Hit Rate (%)",
+      "title": "Cluster Cache Hit Rate",
       "type": "timeseries"
     },
     {
-      "datasource": "${alluxio_datasource}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${alluxio_datasource}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -139,6 +162,8 @@
             }
           },
           "mappings": [],
+          "max": 100,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -151,7 +176,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "percent"
         },
         "overrides": [
           {
@@ -183,7 +209,7 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 12,
+        "x": 11,
         "y": 0
       },
       "id": 114,
@@ -191,18 +217,25 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
         {
+          "datasource": {
+            "uid": "${alluxio_datasource}"
+          },
+          "editorMode": "code",
           "exemplar": true,
-          "expr": "Master_ListingCacheHits{job=\"$masters\"}",
+          "expr": "Master_ListingCacheHits{job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -214,7 +247,10 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "KaXNuaQ7z"
+      },
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -247,7 +283,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -257,17 +293,21 @@
       "steppedLine": false,
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "KaXNuaQ7z"
+          },
+          "editorMode": "code",
           "exemplar": true,
-          "expr": "increase(Cluster_BytesReadRemote{job=\"$masters\"}[1m])",
+          "expr": "increase(Cluster_BytesReadRemote{job=\"alluxio_masters\"}[1m])",
           "interval": "",
           "legendFormat": "Bytes Read Remote (Per Minute)",
+          "range": true,
           "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Bytes Read Remote (Per Minute)",
       "tooltip": {
         "shared": true,
@@ -276,9 +316,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -286,25 +324,18 @@
         {
           "$$hashKey": "object:5655",
           "format": "bytes",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:5656",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -312,7 +343,10 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "$alluxio_datasource"
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -339,7 +373,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -349,16 +383,19 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "Cluster_BytesReadRemote{job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "editorMode": "code",
+          "expr": "Cluster_BytesReadRemote{job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
+          "range": true,
           "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Bytes Read Remote",
       "tooltip": {
         "shared": true,
@@ -367,9 +404,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -377,25 +412,18 @@
         {
           "$$hashKey": "object:332",
           "format": "bytes",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:333",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -403,7 +431,10 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "$alluxio_datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -436,7 +467,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -446,17 +477,20 @@
       "steppedLine": false,
       "targets": [
         {
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "editorMode": "code",
           "exemplar": true,
-          "expr": "increase(Cluster_BytesWrittenRemote{job=\"$masters\"}[1m])",
+          "expr": "increase(Cluster_BytesWrittenRemote{job=\"alluxio_masters\"}[1m])",
           "interval": "",
           "legendFormat": "Bytes Written Remote (Per Minute)",
+          "range": true,
           "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Bytes Written Remote (Per Minute)",
       "tooltip": {
         "shared": true,
@@ -465,9 +499,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -475,25 +507,18 @@
         {
           "$$hashKey": "object:5655",
           "format": "bytes",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:5656",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -501,7 +526,10 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "$alluxio_datasource"
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -528,7 +556,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -538,17 +566,20 @@
       "steppedLine": false,
       "targets": [
         {
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "editorMode": "code",
           "exemplar": true,
-          "expr": "Cluster_BytesWrittenRemote{job=\"$masters\"}",
+          "expr": "Cluster_BytesWrittenRemote{job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
+          "range": true,
           "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Bytes Written Remote",
       "tooltip": {
         "shared": true,
@@ -557,9 +588,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -567,25 +596,18 @@
         {
           "$$hashKey": "object:332",
           "format": "bytes",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:333",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -593,7 +615,10 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "$alluxio_datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -626,7 +651,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -636,7 +661,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase(Cluster_BytesReadUfsAll{job=\"$masters\"}[1m])",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "editorMode": "code",
+          "expr": "increase(Cluster_BytesReadUfsAll{job=\"alluxio_masters\"}[1m])",
           "instant": false,
           "interval": "",
           "legendFormat": "Bytes Read UFS (Per Minute)",
@@ -644,9 +673,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Bytes Read UFS (Per Minute)",
       "tooltip": {
         "shared": true,
@@ -655,9 +682,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -665,25 +690,18 @@
         {
           "$$hashKey": "object:6278",
           "format": "bytes",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:6279",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -691,7 +709,10 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "$alluxio_datasource"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -727,7 +748,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -737,8 +758,12 @@
       "steppedLine": false,
       "targets": [
         {
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "editorMode": "code",
           "exemplar": true,
-          "expr": "Cluster_CapacityUsed{job=\"$masters\"}",
+          "expr": "Cluster_CapacityUsed{job=\"alluxio_masters\"}",
           "instant": false,
           "interval": "",
           "legendFormat": "",
@@ -746,9 +771,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Alluxio Cache Space Used",
       "tooltip": {
         "shared": true,
@@ -757,9 +780,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -767,25 +788,18 @@
         {
           "$$hashKey": "object:13972",
           "format": "bytes",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:13973",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -793,7 +807,10 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "$alluxio_datasource"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -829,7 +846,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -839,7 +856,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(Cluster_CapacityUsed{job=\"$masters\"}) / Cluster_CapacityTotal{job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "editorMode": "code",
+          "expr": "(Cluster_CapacityUsed{job=\"alluxio_masters\"}) / Cluster_CapacityTotal{job=\"alluxio_masters\"}",
           "instant": false,
           "interval": "",
           "legendFormat": "",
@@ -847,9 +868,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "% Alluxio Cache Space Used",
       "tooltip": {
         "shared": true,
@@ -858,9 +877,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -868,7 +885,6 @@
         {
           "$$hashKey": "object:13972",
           "format": "percentunit",
-          "label": null,
           "logBase": 1,
           "max": "1",
           "min": "0",
@@ -877,20 +893,19 @@
         {
           "$$hashKey": "object:13973",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${alluxio_datasource}"
+      },
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -932,17 +947,21 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "targets": [
         {
-          "expr": "Cluster_Workers{job=\"$masters\"}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${alluxio_datasource}"
+          },
+          "editorMode": "code",
+          "expr": "Cluster_Workers{job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
+          "range": true,
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Live Workers",
       "type": "stat"
     },
@@ -951,7 +970,10 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "$alluxio_datasource"
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -978,7 +1000,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -988,22 +1010,28 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "{__name__=~\"Worker_CapacityTotal_.*\",job=\"$workers\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "editorMode": "code",
+          "expr": "{__name__=~\"Worker_CapacityTotal_.*\",job=\"alluxio_workers\"}",
           "interval": "",
           "legendFormat": "",
+          "range": true,
           "refId": "B"
         },
         {
-          "expr": "{__name__=~\"Worker_CapacityUsed_.*\",job=\"$workers\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=~\"Worker_CapacityUsed_.*\",job=\"alluxio_workers\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Worker Cache Space Used",
       "tooltip": {
         "shared": true,
@@ -1012,9 +1040,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -1022,25 +1048,19 @@
         {
           "$$hashKey": "object:2875",
           "format": "bytes",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "$$hashKey": "object:2876",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -1048,7 +1068,10 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "$alluxio_datasource"
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -1075,7 +1098,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1085,16 +1108,19 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "{__name__=~\"Worker_BlocksCached.*\",job=\"$workers\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "editorMode": "code",
+          "expr": "{__name__=~\"Worker_BlocksCached.*\",job=\"alluxio_workers\"}",
           "interval": "",
           "legendFormat": "",
+          "range": true,
           "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Worker Cached Blocks ",
       "tooltip": {
         "shared": true,
@@ -1103,9 +1129,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -1113,25 +1137,18 @@
         {
           "$$hashKey": "object:763",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:764",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -1141,7 +1158,10 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "$alluxio_datasource"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1176,7 +1196,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1186,22 +1206,28 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "Cluster_RootUfsCapacityTotal{job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "editorMode": "code",
+          "expr": "Cluster_RootUfsCapacityTotal{job=\"alluxio_workers\"}",
           "interval": "",
           "legendFormat": "",
+          "range": true,
           "refId": "A"
         },
         {
-          "expr": "Cluster_RootUfsCapacityUsed{job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "Cluster_RootUfsCapacityUsed{job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "B"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "UFS Space Used",
       "tooltip": {
         "shared": true,
@@ -1210,9 +1236,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -1220,25 +1244,18 @@
         {
           "$$hashKey": "object:7630",
           "format": "bytes",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:7631",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -1246,7 +1263,10 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "$alluxio_datasource"
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -1273,7 +1293,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1283,16 +1303,19 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "{__name__=~\"Worker_BlocksEvicted.*\",job=\"$workers\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "editorMode": "code",
+          "expr": "{__name__=~\"Worker_BlocksEvicted.*\",job=\"alluxio_workers\"}",
           "interval": "",
           "legendFormat": "",
+          "range": true,
           "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Evicted Blocks",
       "tooltip": {
         "shared": true,
@@ -1301,38 +1324,33 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
+          "$$hashKey": "object:553",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
+          "$$hashKey": "object:554",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
       "collapsed": false,
-      "datasource": "Alluxio_Prometheus",
+      "datasource": {
+        "uid": "Alluxio_Prometheus"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1341,12 +1359,22 @@
       },
       "id": 58,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "uid": "Alluxio_Prometheus"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Logical Operations",
       "type": "row"
     },
     {
-      "cacheTimeout": null,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "$alluxio_datasource"
+      },
       "description": "Displays the current number of how many directories Alluxio has created since starting",
       "fieldConfig": {
         "defaults": {
@@ -1385,7 +1413,6 @@
         "y": 57
       },
       "id": 60,
-      "interval": null,
       "links": [],
       "maxDataPoints": 100,
       "options": {
@@ -1403,23 +1430,27 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "targets": [
         {
-          "expr": "Master_DirectoriesCreated{job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "editorMode": "code",
+          "expr": "Master_DirectoriesCreated{job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
+          "range": true,
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Directories Created",
       "type": "stat"
     },
     {
-      "cacheTimeout": null,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "description": "displays the number of times the FileInfosGot operation was called",
       "fieldConfig": {
         "defaults": {
@@ -1458,7 +1489,6 @@
         "y": 57
       },
       "id": 62,
-      "interval": null,
       "links": [],
       "maxDataPoints": 100,
       "options": {
@@ -1476,23 +1506,25 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "targets": [
         {
-          "expr": "Master_FileInfosGot{job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "Master_FileInfosGot{job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "File Infos Got",
       "type": "stat"
     },
     {
-      "cacheTimeout": null,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "description": "Displays the total paths located in the Alluxio file system",
       "fieldConfig": {
         "defaults": {
@@ -1531,7 +1563,6 @@
         "y": 57
       },
       "id": 64,
-      "interval": null,
       "links": [],
       "maxDataPoints": 100,
       "options": {
@@ -1549,23 +1580,25 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "targets": [
         {
-          "expr": "Master_TotalPaths{job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "Master_TotalPaths{job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Total Paths",
       "type": "stat"
     },
     {
-      "cacheTimeout": null,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "description": "Displays how many times the CompleteFile operation has been called",
       "fieldConfig": {
         "defaults": {
@@ -1604,7 +1637,6 @@
         "y": 57
       },
       "id": 66,
-      "interval": null,
       "links": [],
       "maxDataPoints": 100,
       "options": {
@@ -1622,23 +1654,25 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "targets": [
         {
-          "expr": "Master_CompleteFileOps{job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "Master_CompleteFileOps{job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Complete File Operations",
       "type": "stat"
     },
     {
-      "cacheTimeout": null,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "description": "Displays the amount of directories that Alluxio has created (Not the current amount of directories)",
       "fieldConfig": {
         "defaults": {
@@ -1677,7 +1711,6 @@
         "y": 57
       },
       "id": 68,
-      "interval": null,
       "links": [],
       "maxDataPoints": 100,
       "options": {
@@ -1695,23 +1728,25 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "targets": [
         {
-          "expr": "Master_CreateDirectoryOps{job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "Master_CreateDirectoryOps{job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Create Directory Oprtations",
       "type": "stat"
     },
     {
-      "cacheTimeout": null,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "description": "Displays how many times the deletePath operation has been called (And how many total paths have been deleted)",
       "fieldConfig": {
         "defaults": {
@@ -1750,7 +1785,6 @@
         "y": 57
       },
       "id": 78,
-      "interval": null,
       "links": [],
       "maxDataPoints": 100,
       "options": {
@@ -1768,23 +1802,25 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "targets": [
         {
-          "expr": "Master_DeletePathOps{job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "Master_DeletePathOps{job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Delete Path Operations",
       "type": "stat"
     },
     {
-      "cacheTimeout": null,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "description": "Displays the current number of pinned files in Alluxio",
       "fieldConfig": {
         "defaults": {
@@ -1823,7 +1859,6 @@
         "y": 63
       },
       "id": 70,
-      "interval": null,
       "links": [],
       "maxDataPoints": 100,
       "options": {
@@ -1841,23 +1876,25 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "targets": [
         {
-          "expr": "Master_FilesPinned{job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "Master_FilesPinned{job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Files Pinned",
       "type": "stat"
     },
     {
-      "cacheTimeout": null,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "description": "Displays how many times the mount operation has been called (including failed invocations)",
       "fieldConfig": {
         "defaults": {
@@ -1896,7 +1933,6 @@
         "y": 63
       },
       "id": 72,
-      "interval": null,
       "links": [],
       "maxDataPoints": 100,
       "options": {
@@ -1914,23 +1950,25 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "targets": [
         {
-          "expr": "Master_MountOps{job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "Master_MountOps{job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Mount Operations",
       "type": "stat"
     },
     {
-      "cacheTimeout": null,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "description": "Displays the current number of freed files in Alluxio",
       "fieldConfig": {
         "defaults": {
@@ -1969,7 +2007,6 @@
         "y": 63
       },
       "id": 74,
-      "interval": null,
       "links": [],
       "maxDataPoints": 100,
       "options": {
@@ -1987,23 +2024,25 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "targets": [
         {
-          "expr": "Master_FilesFreed{job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "Master_FilesFreed{job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Files Freed",
       "type": "stat"
     },
     {
-      "cacheTimeout": null,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "description": "Displays how many times the unmount operation has been called",
       "fieldConfig": {
         "defaults": {
@@ -2042,7 +2081,6 @@
         "y": 63
       },
       "id": 76,
-      "interval": null,
       "links": [],
       "maxDataPoints": 100,
       "options": {
@@ -2060,23 +2098,26 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "targets": [
         {
-          "expr": "Master_UnmountOps{job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "Master_UnmountOps{job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Unmount Operations",
       "type": "stat"
     },
     {
       "collapsed": false,
-      "datasource": "Alluxio_Prometheus",
+      "datasource": {
+        "uid": "Alluxio_Prometheus"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -2085,6 +2126,14 @@
       },
       "id": 46,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "uid": "Alluxio_Prometheus"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Alluxio Metadata Operations",
       "type": "row"
     },
@@ -2093,7 +2142,9 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -2128,7 +2179,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2138,28 +2189,35 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "{__name__=\"Master_GetStatus_User:$alluxio_user\",job=\"$masters\",quantile=\"0.5\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=\"Master_GetStatus_User:$alluxio_user\",job=\"alluxio_masters\",quantile=\"0.5\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         },
         {
-          "expr": "{__name__=\"Master_GetStatus_User:$alluxio_user\",job=\"$masters\",quantile=\"0.95\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=\"Master_GetStatus_User:$alluxio_user\",job=\"alluxio_masters\",quantile=\"0.95\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "B"
         },
         {
-          "expr": "{__name__=\"Master_GetStatus_User:$alluxio_user\",job=\"$masters\",quantile=\"0.99\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=\"Master_GetStatus_User:$alluxio_user\",job=\"alluxio_masters\",quantile=\"0.99\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "C"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "GetStatus Operations",
       "tooltip": {
         "shared": true,
@@ -2168,9 +2226,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -2178,25 +2234,18 @@
         {
           "$$hashKey": "object:11270",
           "format": "ms",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:11271",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -2204,7 +2253,9 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -2239,7 +2290,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2249,28 +2300,35 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "{__name__=\"Master_ListStatus_User:$alluxio_user\",job=\"$masters\",quantile=\"0.5\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=\"Master_ListStatus_User:$alluxio_user\",job=\"alluxio_masters\",quantile=\"0.5\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         },
         {
-          "expr": "{__name__=\"Master_ListStatus_User:$alluxio_user\",job=\"$masters\",quantile=\"0.95\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=\"Master_ListStatus_User:$alluxio_user\",job=\"alluxio_masters\",quantile=\"0.95\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "B"
         },
         {
-          "expr": "{__name__=\"Master_ListStatus_User:$alluxio_user\",job=\"$masters\",quantile=\"0.99\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=\"Master_ListStatus_User:$alluxio_user\",job=\"alluxio_masters\",quantile=\"0.99\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "C"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "ListStatus Operation",
       "tooltip": {
         "shared": true,
@@ -2279,9 +2337,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -2289,25 +2345,18 @@
         {
           "$$hashKey": "object:7740",
           "format": "ms",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:7741",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -2315,7 +2364,9 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -2350,7 +2401,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2360,28 +2411,35 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "{__name__=\"Master_getConfiguration\",job=\"$masters\",quantile=\"0.5\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=\"Master_getConfiguration\",job=\"alluxio_masters\",quantile=\"0.5\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         },
         {
-          "expr": "{__name__=\"Master_getConfiguration\",job=\"$masters\",quantile=\"0.95\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=\"Master_getConfiguration\",job=\"alluxio_masters\",quantile=\"0.95\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "B"
         },
         {
-          "expr": "{__name__=\"Master_getConfiguration\",job=\"$masters\",quantile=\"0.99\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=\"Master_getConfiguration\",job=\"alluxio_masters\",quantile=\"0.99\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "C"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Get Configuration Operation",
       "tooltip": {
         "shared": true,
@@ -2390,9 +2448,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -2400,25 +2456,18 @@
         {
           "$$hashKey": "object:7795",
           "format": "ms",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:7796",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -2430,7 +2479,9 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "description": "Displays the 50th, 95th, and 99th percentiles call time for the blockHeartbeat metadata operation.\n\nNote: This is not a graph for the actual Block Heartbeat just how long it took the operation to run",
       "fieldConfig": {
         "defaults": {
@@ -2465,7 +2516,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2475,28 +2526,35 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "{__name__=\"Master_blockHeartbeat_User:$alluxio_user\",job=\"$masters\",quantile=\"0.5\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=\"Master_blockHeartbeat_User:$alluxio_user\",job=\"alluxio_masters\",quantile=\"0.5\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         },
         {
-          "expr": "{__name__=\"Master_blockHeartbeat_User:$alluxio_user\",job=\"$masters\",quantile=\"0.95\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=\"Master_blockHeartbeat_User:$alluxio_user\",job=\"alluxio_masters\",quantile=\"0.95\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "B"
         },
         {
-          "expr": "{__name__=\"Master_blockHeartbeat_User:$alluxio_user\",job=\"$masters\",quantile=\"0.99\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=\"Master_blockHeartbeat_User:$alluxio_user\",job=\"alluxio_masters\",quantile=\"0.99\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "C"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Block Heartbeat Operation",
       "tooltip": {
         "shared": true,
@@ -2505,9 +2563,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -2515,25 +2571,18 @@
         {
           "$$hashKey": "object:5599",
           "format": "ms",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:5600",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -2541,7 +2590,9 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "description": "Displays the 50th, 95th, and 99th percentiles call time for the workerHeartbeat metadata operation.\n\nNote: This is not a graph for the actual Worker Heartbeat just how long it took the operation to run",
       "fieldConfig": {
         "defaults": {
@@ -2576,7 +2627,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2586,28 +2637,35 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "{__name__=~\"Worker_Heartbeat_User:$alluxio_user[a-zA-Z0-9_]+\",job=\"$workers\",quantile=\"0.5\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=~\"Worker_Heartbeat_User:$alluxio_user[a-zA-Z0-9_]+\",job=\"alluxio_workers\",quantile=\"0.5\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         },
         {
-          "expr": "{__name__=~\"Worker_Heartbeat_User:$alluxio_user[a-zA-Z0-9_]+\",job=\"$workers\",quantile=\"0.95\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=~\"Worker_Heartbeat_User:$alluxio_user[a-zA-Z0-9_]+\",job=\"alluxio_workers\",quantile=\"0.95\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "B"
         },
         {
-          "expr": "{__name__=~\"Worker_Heartbeat_User:$alluxio_user[a-zA-Z0-9_]+\",job=\"$workers\",quantile=\"0.99\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=~\"Worker_Heartbeat_User:$alluxio_user[a-zA-Z0-9_]+\",job=\"alluxio_workers\",quantile=\"0.99\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "C"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Worker Heartbeat Operation",
       "tooltip": {
         "shared": true,
@@ -2616,9 +2674,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -2626,30 +2682,25 @@
         {
           "$$hashKey": "object:5491",
           "format": "ms",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:5492",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
       "collapsed": false,
-      "datasource": "Alluxio_Prometheus",
+      "datasource": {
+        "uid": "Alluxio_Prometheus"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -2658,6 +2709,14 @@
       },
       "id": 24,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "uid": "Alluxio_Prometheus"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "AsyncCache Blocks & Operations",
       "type": "row"
     },
@@ -2666,7 +2725,9 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -2709,16 +2770,17 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase({__name__=~\"Worker_AsyncCacheSucceededBlocks.*\",job=\"$workers\"}[1m])",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "increase({__name__=~\"Worker_AsyncCacheSucceededBlocks.*\",job=\"alluxio_workers\"}[1m])",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "AsyncCacheSuccessedBlocks (Per Minute)",
       "tooltip": {
         "shared": true,
@@ -2727,9 +2789,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -2737,25 +2797,18 @@
         {
           "$$hashKey": "object:7026",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:7027",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -2763,7 +2816,9 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -2806,16 +2861,17 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase({__name__=~\"Worker_AsyncCacheFailedBlocks.*\",job=\"$workers\"}[1m])",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "increase({__name__=~\"Worker_AsyncCacheFailedBlocks.*\",job=\"alluxio_workers\"}[1m])",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "AsyncCacheFailedBlocks (Per Minute)",
       "tooltip": {
         "shared": true,
@@ -2824,9 +2880,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -2834,25 +2888,18 @@
         {
           "$$hashKey": "object:7356",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:7357",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -2860,7 +2907,9 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -2903,16 +2952,17 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase({__name__=~\"Worker_AsyncCacheRemoteBlocks.*\",job=\"$workers\"}[1m])",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "increase({__name__=~\"Worker_AsyncCacheRemoteBlocks.*\",job=\"alluxio_workers\"}[1m])",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "AsyncCacheRemoteBlocks (Per Minute)",
       "tooltip": {
         "shared": true,
@@ -2921,9 +2971,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -2931,25 +2979,18 @@
         {
           "$$hashKey": "object:7244",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:7245",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -2957,7 +2998,9 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -3000,16 +3043,17 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase({__name__=~\"Worker_AsyncCacheUfsBlocks.*\",job=\"$workers\"}[1m])",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "increase({__name__=~\"Worker_AsyncCacheUfsBlocks.*\",job=\"alluxio_workers\"}[1m])",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "AsyncCacheUfsBlocks (Per Minute)",
       "tooltip": {
         "shared": true,
@@ -3018,9 +3062,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -3028,25 +3070,18 @@
         {
           "$$hashKey": "object:7300",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:7301",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -3054,7 +3089,9 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -3097,16 +3134,17 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase({__name__=~\"Worker_AsyncCacheRequests.*\",job=\"$workers\"}[1m])",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "increase({__name__=~\"Worker_AsyncCacheRequests.*\",job=\"alluxio_workers\"}[1m])",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "AsyncCacheRequests (Per Minute)",
       "tooltip": {
         "shared": true,
@@ -3115,9 +3153,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -3125,25 +3161,18 @@
         {
           "$$hashKey": "object:7082",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:7083",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -3151,7 +3180,9 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -3194,16 +3225,17 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase({__name__=~\"Worker_AsyncCacheDuplicateRequests.*\",job=\"$workers\"}[1m])",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "increase({__name__=~\"Worker_AsyncCacheDuplicateRequests.*\",job=\"alluxio_workers\"}[1m])",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "AsyncCacheDuplicateRequests (Per Minute)",
       "tooltip": {
         "shared": true,
@@ -3212,9 +3244,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -3222,30 +3252,25 @@
         {
           "$$hashKey": "object:7188",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:7189",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
       "collapsed": false,
-      "datasource": "Alluxio_Prometheus",
+      "datasource": {
+        "uid": "Alluxio_Prometheus"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -3254,6 +3279,14 @@
       },
       "id": 92,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "uid": "Alluxio_Prometheus"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Master JVM Memory",
       "type": "row"
     },
@@ -3262,7 +3295,9 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -3299,34 +3334,44 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "{__name__=\"pools_Compressed_Class_Space_used\", job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=\"pools_Compressed_Class_Space_used\", job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         },
         {
-          "expr": "{__name__=\"pools_Metaspace_used\", job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=\"pools_Metaspace_used\", job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "B"
         },
         {
-          "expr": "{__name__=\"pools_PS_Eden_Space_used\", job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=\"pools_PS_Eden_Space_used\", job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "C"
         },
         {
-          "expr": "{__name__=\"pools_PS_Survivor_Space_used\", job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=\"pools_PS_Survivor_Space_used\", job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "D"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Master Pools Memory",
       "tooltip": {
         "shared": true,
@@ -3335,9 +3380,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -3345,25 +3388,18 @@
         {
           "$$hashKey": "object:4436",
           "format": "bytes",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:4437",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -3371,7 +3407,9 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -3408,28 +3446,35 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "{__name__=\"heap_used\",job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=\"heap_used\",job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         },
         {
-          "expr": "{__name__=\"heap_max\",job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=\"heap_max\",job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "B"
         },
         {
-          "expr": "{__name__=\"non_heap_used\",job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=\"non_heap_used\",job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "C"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Master Heap Memory",
       "tooltip": {
         "shared": true,
@@ -3438,9 +3483,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -3448,25 +3491,18 @@
         {
           "$$hashKey": "object:4322",
           "format": "bytes",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:4323",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -3474,7 +3510,9 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$alluxio_datasource",
+      "datasource": {
+        "uid": "$alluxio_datasource"
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -3511,22 +3549,26 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "{__name__=\"total_max\",job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=\"total_max\",job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         },
         {
-          "expr": "{__name__=\"total_used\",job=\"$masters\"}",
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "expr": "{__name__=\"total_used\",job=\"alluxio_masters\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "B"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Master Total Memory",
       "tooltip": {
         "shared": true,
@@ -3535,9 +3577,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -3545,30 +3585,23 @@
         {
           "$$hashKey": "object:4208",
           "format": "bytes",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:4209",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     }
   ],
   "refresh": "1m",
-  "schemaVersion": 31,
+  "schemaVersion": 38,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -3576,11 +3609,9 @@
       {
         "current": {
           "selected": false,
-          "text": "Alluxio_Prometheus",
-          "value": "Alluxio_Prometheus"
+          "text": "Prometheus",
+          "value": "Prometheus"
         },
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": "The datasource of alluxio prometheus",
@@ -3595,8 +3626,6 @@
         "type": "datasource"
       },
       {
-        "description": null,
-        "error": null,
         "hide": 2,
         "label": "The prometheus job_name including master nodes",
         "name": "masters",
@@ -3605,8 +3634,6 @@
         "type": "constant"
       },
       {
-        "description": null,
-        "error": null,
         "hide": 2,
         "label": "The prometheus job_name including worker nodes",
         "name": "workers",
@@ -3615,8 +3642,6 @@
         "type": "constant"
       },
       {
-        "description": null,
-        "error": null,
         "hide": 2,
         "label": "The super user of alluxio",
         "name": "alluxio_user",
@@ -3647,5 +3672,6 @@
   "timezone": "",
   "title": "Alluxio Summary View Dashboard",
   "uid": "oJnC7i4Mk",
-  "version": 1
+  "version": 1,
+  "weekStart": ""
 }
