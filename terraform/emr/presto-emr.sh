@@ -290,6 +290,7 @@ USAGE_END
   # onprem catalog is created for hybrid use cases
   # onprem catalog may be configured with onprem hdfs/hive, kerberos, alluxio shim based on user inputs
   # the original hive catalog is left untouch
+  echo "Copying ${PRESTO_HIVE_CATALOG} to ${PRESTO_ONPREM_CATALOG}"
   sudo cp "${PRESTO_HIVE_CATALOG}" "${PRESTO_ONPREM_CATALOG}"
 
   set_presto_onprem_property hive.hdfs.impersonation.enabled "true"
