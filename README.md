@@ -113,8 +113,6 @@ When both the on-prem and cloud portions of the Alluxio demo environment are lau
 
 ## Step 6. Load data into the on-prem HDFS storage
 
-NOTE: This step is already executed by the terraform template.
-
 In the "ON PREM" ssh terminal tab, open a shell session on the master node in the on-prem demo environment. Copy the SSH command found on the "Outputs" section displayed at the end of the "terraform apply" command. Use the "ssh_to_ONPREM_master_node" command and run it in this terminal tab, like this:
 
      ssh hadoop@ec2-54-183-19-251.us-west-1.compute.amazonaws.com
@@ -129,12 +127,10 @@ Load data from the tpcds dataset files into HDFS, using the commands:
      
      s3-dist-cp --src s3a://autobots-tpcds-pregenerated-data/spark/unpart_sf100_10k/item/ --dest hdfs:///data/tpcds/item/
 
-Create some Hive tables that reference the imported tpcds datasets, using the commands:
+Create the Hive tables that reference the imported tpcds datasets, using the commands:
 
-     wget https://alluxio-public.s3.amazonaws.com/hybrid-quickstart/create-table.sql
-     
-     sed -i 's~/tmp/~/data/~g' create-table.sql
-     
+     wget https://raw.githubusercontent.com/gregpalmr/alluxio-hybrid-cloud-demo/main/resources/hive/create-hive-tables.sql     
+
      hive -f create-table.sql
 
 ## Step 7. Setup the Presto queries
@@ -145,22 +141,11 @@ In the "CLOUD - COMPUTE" ssh terminal tab, open a shell session on the master no
   
 Download the TPC-DS SQL query to be run in Presto, using the command:
 
-     wget https://alluxio-public.s3.amazonaws.com/hybrid-quickstart/q44.sql
+     wget https://raw.githubusercontent.com/gregpalmr/alluxio-hybrid-cloud-demo/main/resources/presto/tpcds-query-44.sql
      
-Also, create a sorter version of the Q44 query, using the command:
+Run the first iteration of the TPC/DS Q44 SQL query. This Presto query will run against the Alluxio file system before any data has been cached, so it will be slower. Later you will run it again when that cache has been warmed and will compare the times. Use the Presto cli command:
 
-     cat <<EOF > query44-1.sql
-     select avg(ss_net_profit) rank_col
-       from store_sales
-       where ss_store_sk = 4
-         and ss_addr_sk is null
-       group by ss_store_sk
-     limit 10;
-     EOF
-
-Run the first iteration of the Q44 SQL query. This Presto query will run against the Alluxio file system before any data has been cached, so it will be slower. Later you will run it again when that cache has been warmed and will compare the times. Use the Presto cli command:
-
-     presto-cli --catalog onprem --schema default < q44.sql
+     presto-cli --catalog onprem --schema default < tpcds-query-44.sql
 
 ## Step 8. Mount other Alluxio UFSs
 
