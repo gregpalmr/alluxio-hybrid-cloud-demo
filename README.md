@@ -108,7 +108,7 @@ When both the on-prem and cloud portions of the Alluxio demo environment are lau
      
      Outputs:
      
-     ssh_to_CLOUD_master_node = "ssh hadoop@ec2-54-205-235-107.compute-1.amazonaws.com"
+     ssh_to_CLOUD_master_node = "ssh hadoop@ec2-3-84-155-183.compute-1.amazonaws.com"
      ssh_to_ONPREM_master_node = "ssh hadoop@ec2-54-176-16-121.us-west-1.compute.amazonaws.com"
 
 ## Step 6. Load data into the on-prem HDFS storage
@@ -124,6 +124,8 @@ Create a new directory in HDFS, using the command:
 Load data from the tpcds dataset files into HDFS, using the commands:
 
      s3-dist-cp --src s3a://autobots-tpcds-pregenerated-data/spark/unpart_sf100_10k/store_sales/ --dest hdfs:///data/tpcds/store_sales/
+
+and:
      
      s3-dist-cp --src s3a://autobots-tpcds-pregenerated-data/spark/unpart_sf100_10k/item/ --dest hdfs:///data/tpcds/item/
 
@@ -131,13 +133,13 @@ Create the Hive tables that reference the imported tpcds datasets, using the com
 
      wget https://raw.githubusercontent.com/gregpalmr/alluxio-hybrid-cloud-demo/main/resources/hive/create-hive-tables.sql     
 
-     hive -f create-table.sql
+     hive -f create-hive-tables.sql
 
 ## Step 7. Setup the Presto queries
 
 In the "CLOUD - COMPUTE" ssh terminal tab, open a shell session on the master node in the cloud demo environment. Copy the SSH command found on the "Outputs" section displayed at the end of the "terraform apply" command. Use the "ssh_to_CLOUD_master_node" command and run it in this terminal tab, like this:
 
-     ssh hadoop@ec2-54-183-19-251.us-east-1.compute.amazonaws.com
+     ssh hadoop@ec2-3-84-155-183.compute-1.amazonaws.com
   
 Download the TPC-DS SQL query to be run in Presto, using the command:
 
@@ -190,17 +192,27 @@ Point your web browser to the "cloud compute" cluster's master node and display 
 
      http://ec2-18-212-208-181.compute-1.amazonaws.com:8889
 
-## Step 9. Re-run the Presto TPD-DS Q44 Query
+## Step 10. Display the Grafana monitoring Web UI
+
+Point your web browser to the "cloud compute" cluster's master node and display the Grafana web UI:
+
+     http://ec2-18-212-208-181.compute-1.amazonaws.com:3000
+
+## Step 11. Re-run the Presto TPD-DS Q44 Query
 
 Run the Presto query again, so we can compare the cold cache vs warm cache performance. Use this command on the "CLOUD COMPUTE" shell session:
 
-          presto-cli --catalog onprem --schema default < q44.sql
+          presto-cli --catalog onprem --schema default < tpcds-query-44.sql
 
 # Demo Presentation Instructions
 
 ## Step 1. Show Alluxio Unified Namespace
 
-TBD
+In the Alluxio Web UI, click on the "Browse" tab at the top of the page. 
+
+Show the "alluxio_s3_mount" directory and the "alluxio_hdfs_mount" directory and talk about how Alluxio can mount multiple data stores at the same time. 
+
+Then show the "alluxio_union_mount" directory and show how data sets from heterogeneous data stores can be merged into a "unified namespace", so that end-users don't have to know where the data is actually stored.
 
 ## Step 2. TBD
 
