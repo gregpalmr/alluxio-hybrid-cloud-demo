@@ -291,7 +291,22 @@ USAGE_END
   # onprem catalog may be configured with onprem hdfs/hive, kerberos, alluxio shim based on user inputs
   # the original hive catalog is left untouch
   echo "Copying ${PRESTO_HIVE_CATALOG} to ${PRESTO_ONPREM_CATALOG}"
-  sudo cp "${PRESTO_HIVE_CATALOG}" "${PRESTO_ONPREM_CATALOG}"
+  sleep 10
+  if [ -f xxx]; then
+    sudo cp "${PRESTO_HIVE_CATALOG}" "${PRESTO_ONPREM_CATALOG}"
+  else
+    echo "Error: Presto hive catalog file \"${PRESTO_HIVE_CATALOG}\" does not exist. Creating file \"${PRESTO_ONPREM_CATALOG}\" manually."
+    cat <<EOF | sudo tee ${PRESTO_ONPREM_CATALOG}
+hive.metastore-refresh-interval=1m
+connector.name=hive-hadoop2
+hive.metastore-cache-ttl=20m
+hive.config.resources=/etc/hadoop/conf/core-site.xml,/etc/hadoop/conf/hdfs-site.xml
+hive.non-managed-table-writes-enabled = true
+hive.s3-file-system-type = EMRFS
+hive.hdfs.impersonation.enabled = true
+hive.metastore.uri = thrift://ip-XX-XXX-X-XXX.ec2.internal:9083
+EOF
+  fi
 
   set_presto_onprem_property hive.hdfs.impersonation.enabled "true"
   set_presto_onprem_property hive.metastore.uri "${hms_uri}"
@@ -352,13 +367,6 @@ USAGE_END
   fi
 
   echo "Presto bootstrap complete!"
-
-  if [[ "${is_master}" == "true" ]]; then
-    echo "Downloading Presto TPCDS sample Presto queries in /tmp"
-    sleep 5
-    cd /home/hadoop
-    wget https://alluxio-public.s3.amazonaws.com/hybrid-quickstart/q44.sql
-  fi
 }
 
 main "$@"
