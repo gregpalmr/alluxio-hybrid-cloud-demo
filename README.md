@@ -25,7 +25,7 @@ To use the commands outlined in the repo, you will need the following:
      - AWS Key Pairs
      - AWS S3 Buckets
      - EMR clusters
-     - EC2 instance types as specfied in the create-cluster command
+     - EC2 instance types as specified in the create-cluster command
 
 # Demo Environment Setup Instructions
 
