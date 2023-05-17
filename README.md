@@ -172,7 +172,7 @@ Use the terraform cli to launch the Alluxio demo environment in AWS. Use the com
 
      terraform init
      
-     terraform apply
+     terraform apply -auto-approve
      
 When both the on-prem and cloud portions of the Alluxio demo environment are launched completely, you will see the public ip addresses of the main cluster nodes for each environment. It will look like this:
 
@@ -281,7 +281,7 @@ Run the Presto query again, so we can compare the cold cache vs warm cache perfo
 
 Use these commands to destroy the demo environment:
 
-     terraform destroy
+     terraform destroy -auto-approve
 
 ---
 
