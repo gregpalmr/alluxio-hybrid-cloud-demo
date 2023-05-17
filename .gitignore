@@ -1,0 +1,7 @@
+*.swp
+.terraform*
+terraform-init.out
+terraform-apply.out
+terraform-destroy.out
+terraform.tfstate
+terraform.tfstate.backup
