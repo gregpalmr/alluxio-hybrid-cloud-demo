@@ -3,11 +3,11 @@ Spin up an Alluxio hybrid cloud demo environment on AWS
 
 ## Background
 
-Alluxio Data Orchestration enables data consumers to access data anyware in the enterprise. Whether the data is in an on-prem storage environment like Hadoop or S3 compatible storage, or in a cloud-based datalake, Alluxio's unified-namespace feature allows Presto, Impala, Drill, Dremio, Spark and Hive users to access remote data without knowing that the data is remote. And Alluxio's memory caching allows those users to access the data at "local data" query speeds.
+Alluxio Data Orchestration enables data consumers to access data anywhare in the enterprise. Whether the data is in an on-prem storage environment like Hadoop or S3 compatible storage, or in a cloud-based data lake, Alluxio's unified-namespace feature allows Presto, Impala, Drill, Dremio, Spark and Hive users to access remote data without knowing that the data is remote. And Alluxio's memory caching allows those users to access the data at "local data" query speeds.
 
 This git repo contains instructions and artifacts for launching an Alluxio hybrid cloud demo environment.
 
-## Prerequesites
+## Prerequisites
 
 To use the commands outlined in the repo, you will need the following:
 
@@ -33,7 +33,7 @@ To use the commands outlined in the repo, you will need the following:
 
 On Windows, use an SSH terminal client application that can use standard ssh keys.
 
-On MacOS, open an iTerm2 window with create three tabs labled:
+On MacOS, open an iTerm2 window with create three tabs labeled:
 
 - Launch Demo
 - ON PREM - STORAGE
