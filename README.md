@@ -27,6 +27,16 @@ To use the commands outlined in the repo, you will need the following:
      - EMR clusters
      - EC2 instance types as specified in the create-cluster command
 
+- The AWS IAM roles to attach to your user (represented by your IAM access keys) should include:
+
+     IAMFullAccess
+     AmazonEC2FullAccess (including EC2 instance type quotas)
+     AmazonEMRFullAccessPolicy_v2
+     AmazonEMRServicePolicy_v2
+     AmazonS3FullAccess
+
+If you find that you get errors because you have exceeded your quotas for the EC2 instance types (r4.4xlarge and r5d.4xlarge by default), you can open a support ticket with Amazon and ask for increased quotas.
+
 # Demo Environment Setup Instructions
 
 ## Step 1. Open a multi-tabbed terminal window
