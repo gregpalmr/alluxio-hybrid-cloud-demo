@@ -180,7 +180,7 @@ On the CLOUD COMPUTE environment, cause Alluxio to do a metadata sync
 
      alluxio fs loadMetadata /
 
-# Step 6. Show how Alluxio manages the PDDM policies
+## Step 6. Show how Alluxio manages the PDDM policies
 
 See what the initial delay is for new policies (defaults to 5m), 
 
