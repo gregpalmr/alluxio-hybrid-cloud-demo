@@ -247,10 +247,10 @@
   ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} ${cmd} &>/dev/null
 
   echo
-  show_msg "The demo cluster will remain up for ${TERMINATE_DEMO_PERIOD}."
-  echo
-  show_msg "To destroy the cluster manually, press Ctrl-C to exit this script"
-  show_msg "and run the command:"
+  #show_msg "The demo cluster will remain up for ${TERMINATE_DEMO_HOURS} hours."
+  #echo
+  #show_msg "To destroy the cluster manually, press Ctrl-C to exit this script"
+  show_msg "To destroy the cluster, and run the command:"
   echo
   show_msg "    terraform destroy -auto-approve "
   echo
@@ -274,16 +274,16 @@
   fi
 
   # Wait for 2 hours and then destroy the cluster
-  num_seconds=$((${TERMINATE_DEMO_HOURS}*60))
-  sleep ${num_seconds}
+  #num_seconds=$((${TERMINATE_DEMO_HOURS}*60))
+  #sleep ${num_seconds}
 
   # finish up the script
-  echo
-  show_msg "Running command: terraform destroy -auto-approve"
-  echo
-  show_msg "See terraform/terraform-destroy.out for results."
+  #echo
+  #show_msg "Running command: terraform destroy -auto-approve"
+  #echo
+  #show_msg "See terraform/terraform-destroy.out for results."
 
-  terraform destroy -auto-approve > terraform-destroy.out 2>&1
+  #terraform destroy -auto-approve > terraform-destroy.out 2>&1
 
   cd ${original_dir}
 
