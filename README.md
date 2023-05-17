@@ -3,7 +3,7 @@ Spin up an Alluxio hybrid cloud demo environment on AWS
 
 ## Background
 
-Alluxio Data Orchestration enables data consumers to access data anywhare in the enterprise. Whether the data is in an on-prem storage environment like Hadoop or S3 compatible storage, or in a cloud-based data lake, Alluxio's unified-namespace feature allows Presto, Impala, Drill, Dremio, Spark and Hive users to access remote data without knowing that the data is remote. And Alluxio's memory caching allows those users to access the data at "local data" query speeds.
+Alluxio Data Orchestration enables data consumers to access data anywhere in the enterprise. Whether the data is in an on-prem storage environment like Hadoop or S3 compatible storage, or in a cloud-based data lake, Alluxio's unified-namespace feature allows Presto, Impala, Drill, Dremio, Spark and Hive users to access remote data without knowing that the data is remote. And Alluxio's memory caching allows those users to access the data at "local data" query speeds.
 
 This git repo contains instructions and artifacts for launching an Alluxio hybrid cloud demo environment.
 
@@ -27,7 +27,7 @@ To use the commands outlined in the repo, you will need the following:
      - AWS Key Pairs
      - AWS S3 Buckets
      - EMR clusters
-     - EC2 instance types as specified in the create-cluster command
+     - EC2 instance types as specified in the terraform template
 
 - The AWS IAM roles to attach to your user (represented by your IAM access keys) should include:
 
@@ -61,7 +61,7 @@ In the "Launch Demo" terminal tab, clone this git repo with the commands:
 
      cd alluxio-hybrid-cloud-demo
 
-## Step 3. Launch the demo cluster
+## Step 3. Launch the demo clusters
 
 The Alluxio hybrid-cloud demo launches two EMR clusters, one that represents an ON-PREM data center, running Hadoop and an HDFS data store, and another EMR cluster that represents the CLOUD environment running user workloads such as Presto and Spark with Alluxio acting as the local data provider.
 
@@ -107,17 +107,17 @@ During the demo setup procedure above, The TPC-DS Q44 Presto query was run again
 
 In the Presto UI, show how the first run of the query took longer because it was against a "cold" cache environment. Enable viewing of completed jobs, by clicking on the "Finished" jobs filter button. 
 
-Then sroll down to the bottom of the listing and show the first Q44 job results and show that it took about 3 minutes and 30 seconds (3.5 mins). 
+Then scroll down to the bottom of the listing and show the first Q44 job results and show that it took about 3 minutes and 30 seconds (3.5 mins). 
 
-Then scroll up a little, and show the second Q44 job and show that it took about 2 minutes and 30 seconds (2.5 mins) and state that it was faster becuase the Presto job did not have to get all the data from the "on-prem" data center, but was able to read Alluxio's cached data in the same cloud region as the Presto servers.
+Then scroll up a little, and show the second Q44 job and show that it took about 2 minutes and 30 seconds (2.5 mins) and state that it was faster because the Presto job did not have to get all the data from the "on-prem" data center, but was able to read Alluxio's cached data in the same cloud region as the Presto servers.
 
 To reinforce that, display the Alluxio Web UI and in the "Overview" page show that about 60 GB of data was cached after the first run of the Presto query. Also show the "Workers" page and show that each Alluxio worker node cached some of that data, about equal amounts of it. Bring up the Grafana UI (log in with admin/admin) and show the "Cache Hit Rate" dashboard panel that shows that over 50% of the data was read from cache storage.
 
 Talk about how Alluxio also supports pre-loading data into cache storage in advance of end-user data access requests. 
 
-Also talk about how Alluxio supports pinning data so that it remains in the cache forever or for a specified amount of time which supports popular data sets that may be used consistantly.
+Also talk about how Alluxio supports pinning data so that it remains in the cache forever or for a specified amount of time which supports popular data sets that may be used consistently.
 
-Finally, talk about how Alluxio supports time-to-live (TTL) attributes that can cause data to be cached for a certain amount of time (1 day for instance), and then the data can be automatically purched from the cached, and even deleted from the understore as well.
+Finally, talk about how Alluxio supports time-to-live (TTL) attributes that can cause data to be cached for a certain amount of time (1 day for instance), and then the data can be automatically purged from the cached, and even deleted from the understore as well.
 
 ## Step 3. Show how Alluxio improves performance of Spark jobs too 
 
@@ -309,7 +309,7 @@ Run the first iteration of the TPC/DS Q44 SQL query. This Presto query will run 
 
 ## Step 6. Mount other Alluxio UFSs
 
-This Alluxio demo illustrates the use of Alluxio's unified namespace capability, so we will mount other under stores to use within the unified namespace. Alluxio is already configured with a "root" understore that points to the "on-prem" Hadoop enviornment. So we will mount an S3 under store and a union mount with both S3 and HDFS understores combined in a single mount point.  
+This Alluxio demo illustrates the use of Alluxio's unified namespace capability, so we will mount other under stores to use within the unified namespace. Alluxio is already configured with a "root" understore that points to the "on-prem" Hadoop environment. So we will mount an S3 under store and a union mount with both S3 and HDFS understores combined in a single mount point.  
 
 Mount the NYC taxi ride public data set as an S3 bucket using the command:
 
