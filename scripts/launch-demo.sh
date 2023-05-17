@@ -207,6 +207,25 @@
     exit -1
   fi
 
+  echo 
+  show_msg "The following URLs will be launched in your web browser."
+  show_msg "If you don't see them, open the URLs in your browser:
+  echo
+  show_msg "     Alluxio UI:      http://${cloud_ip_address}:19999"
+  show_msg "     Presto  UI:      http://${cloud_ip_address}:8889"
+  show_msg "     Prometheus UI:   http://${cloud_ip_address}:9090"
+  show_msg "     Grafana UI:      http://${cloud_ip_address}:3000 (admin/admin)"
+  show_msg "     Spark Master UI: http://${cloud_ip_address}:8080"
+  echo
+
+  if [ "$this_os" == "MacOS" ]; then
+    open http://${cloud_ip_address}:19999
+    open http://${cloud_ip_address}:8889
+    open http://${cloud_ip_address}:9090
+    open http://${cloud_ip_address}:3000
+    open http://${cloud_ip_address}:8080
+  fi
+
   # Setup and run the Presto TPC-DS queries
   show_msg "Running the TPC-DS Q44 Presto query in the CLOUD Presto/Alluxio cluster."
   show_msg "This first run will be slow becuase the Alluxio cache is not warmed up yet."
@@ -238,9 +257,10 @@
 			  --option alluxio-union.priority.read=hdfs_mount,s3_mount \
 			  --option alluxio-union.collection.create=hdfs_mount \
 			  /alluxio_union_mount union://union_mount_ufs/"
-  ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} "${cmd} &>/dev/null
+  ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} "${cmd} &>/dev/null"
 
   # Run the TPC-DS Q44 presto query two more times (to get the Alluxio cache hit rate above 50%)
+  show_msg "Running the TPC-DS Q44 Presto query two more times, in the CLOUD Presto/Alluxio cluster."
   cmd="presto-cli --catalog onprem --schema default < tpcds-query-44.sql"
   ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} ${cmd} &>/dev/null
   sleep 10
@@ -254,24 +274,6 @@
   echo
   show_msg "    terraform destroy -auto-approve "
   echo
-
-  echo 
-  show_msg "Launch the following URLs in your web browser:"
-  echo
-  show_msg "     Alluxio UI:      http://${cloud_ip_address}:19999"
-  show_msg "     Presto  UI:      http://${cloud_ip_address}:8889"
-  show_msg "     Prometheus UI:   http://${cloud_ip_address}:9090"
-  show_msg "     Grafana UI:      http://${cloud_ip_address}:3000 (admin/admin)"
-  show_msg "     Spark Master UI: http://${cloud_ip_address}:8080"
-  echo
-
-  if [ "$this_os" == "MacOS" ]; then
-    open http://${cloud_ip_address}:19999
-    open http://${cloud_ip_address}:8889
-    open http://${cloud_ip_address}:9090
-    open http://${cloud_ip_address}:3000
-    open http://${cloud_ip_address}:8080
-  fi
 
   # Wait for 2 hours and then destroy the cluster
   #num_seconds=$((${TERMINATE_DEMO_HOURS}*60))
