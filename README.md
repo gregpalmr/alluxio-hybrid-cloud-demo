@@ -101,9 +101,59 @@ Show the "alluxio_s3_mount" directory and the "alluxio_hdfs_mount" directory and
 
 Then show the "alluxio_union_mount" directory and show how data sets from heterogeneous data stores can be merged into a "unified namespace", so that end-users don't have to know where the data is actually stored.
 
-## Step 2. TBD
+## Step 2. Show how Alluxio improves performance of Presto queries
 
-## Step 3. Setup an Alluxio policy driven data management rule (PDDM)
+During the demo setup procedure above, The TPC-DS Q44 Presto query was run against Alluxio three times. 
+
+In the Presto UI, show how the first run of the query took longer because it was against a "cold" cache environment. Enable viewing of completed jobs, by clicking on the "Finished" jobs filter button. 
+
+Then sroll down to the bottom of the listing and show the first Q44 job results and show that it took about 3 minutes and 30 seconds (3.5 mins). 
+
+Then scroll up a little, and show the second Q44 job and show that it took about 2 minutes and 30 seconds (2.5 mins) and state that it was faster becuase the Presto job did not have to get all the data from the "on-prem" data center, but was able to read Alluxio's cached data in the same cloud region as the Presto servers.
+
+To reinforce that, display the Alluxio Web UI and in the "Overview" page show that about 60 GB of data was cached after the first run of the Presto query. Also show the "Workers" page and show that each Alluxio worker node cached some of that data, about equal amounts of it.
+
+Talk about how Alluxio also supports pre-loading data into cache storage in advance of end-user data access requests. 
+
+Also talk about how Alluxio supports pinning data so that it remains in the cache forever or for a specified amount of time which supports popular data sets that may be used consistantly.
+
+Finally, talk about how Alluxio supports time-to-live (TTL) attributes that can cause data to be cached for a certain amount of time (1 day for instance), and then the data can be automatically purched from the cached, and even deleted from the understore as well.
+
+## Step 3. Show how Alluxio caches metadata as well
+
+Talk about how Alluxio cached metadata and can update metadata on a schedule (every 5 minutes by default) or in an on-demand fashion.
+
+Show metadata caching and refreshing with these steps:
+
+In the "CLOUD - COMPUTE" ssh session, run a Presto query against the small example "students" table:
+
+     presto-cli --catalog onprem --schema default --execute "select * from students;"
+
+Show the results of the query and then modify the table in the on-prem environment. In the "ON-PREM STORAGE" ssh session, update the "students" table with the command:
+
+     hive -e "insert overwrite table students values ('fred flintstone', 32), ('barney rubble', 32);"
+
+and show the contents of the updated table with the command:
+
+     hive -e "select * from students;"
+
+Now, go back to the "ON-PREM STORAGE" ssh session and re-run the Presto query with the command:
+
+     presto-cli --catalog onprem --schema default --execute "select * from students;"
+
+It should show the out-dated contents of the Hive table.
+
+Now, have Alluxio update the metadata. In the "ON-PREM STORAGE" ssh session, run the command:
+
+     alluxio fs loadMetadata -R -F /data/
+
+Finally, re-run the Presto query to show the updated data. In the "ON-PREM STORAGE" ssh session, run the command:
+
+     presto-cli --catalog onprem --schema default --execute "select * from students;"
+
+## Step 4. Discuss Alluxio's policy driven data management (PDDM) capabilities
+
+TBD
 
 Copy data from the hdfs_mount to the s3_mount, when a file is older than 1 minute:
 
