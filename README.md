@@ -111,7 +111,7 @@ Then sroll down to the bottom of the listing and show the first Q44 job results 
 
 Then scroll up a little, and show the second Q44 job and show that it took about 2 minutes and 30 seconds (2.5 mins) and state that it was faster becuase the Presto job did not have to get all the data from the "on-prem" data center, but was able to read Alluxio's cached data in the same cloud region as the Presto servers.
 
-To reinforce that, display the Alluxio Web UI and in the "Overview" page show that about 60 GB of data was cached after the first run of the Presto query. Also show the "Workers" page and show that each Alluxio worker node cached some of that data, about equal amounts of it.
+To reinforce that, display the Alluxio Web UI and in the "Overview" page show that about 60 GB of data was cached after the first run of the Presto query. Also show the "Workers" page and show that each Alluxio worker node cached some of that data, about equal amounts of it. Bring up the Grafana UI (log in with admin/admin) and show the "Cache Hit Rate" dashboard panel that shows that over 50% of the data was read from cache storage.
 
 Talk about how Alluxio also supports pre-loading data into cache storage in advance of end-user data access requests. 
 
