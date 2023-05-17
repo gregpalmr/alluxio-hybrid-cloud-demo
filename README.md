@@ -75,7 +75,7 @@ First, make sure your AWS CLI commands work with your AWS credentials (in ~/.aws
 
      aws s3 ls /
 
-If these command work, proceed. If not, following AWS CLI setup steps show in:
+If these commands work, proceed. If not, follow the AWS CLI setup steps show in:
 
      https://docs.aws.amazon.com/cli/latest/userguide/getting-started-quickstart.html
 
