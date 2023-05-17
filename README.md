@@ -93,7 +93,7 @@ or
 
 # Demo Presentation Instructions
 
-## Step 1. Show Alluxio Unified Namespace
+## Step 1. Show the Alluxio Unified Namespace feature
 
 In the Alluxio Web UI, click on the "Browse" tab at the top of the page. 
 
