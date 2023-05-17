@@ -30,7 +30,7 @@ To use the commands outlined in the repo, you will need the following:
 - The AWS IAM roles to attach to your user (represented by your IAM access keys) should include:
 
      - IAMFullAccess
-     - AmazonEC2FullAccess (including EC2 instance type quotas)
+     - AmazonEC2FullAccess 
      - AmazonEMRFullAccessPolicy_v2
      - AmazonEMRServicePolicy_v2
      - AmazonS3FullAccess
