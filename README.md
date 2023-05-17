@@ -165,7 +165,7 @@ Copy data from the hdfs_mount to the s3_mount, when a file is older than 1 minut
 
 Copy data from the hdfs_mount to the s3_mount, when a file is older than 3 days:
 
-     alluxio fs policy add /union_mount "migrate_from_hdfs_to_cloud:ufsMigrate(olderThan(3d), UFS[s3_mount]:STORE)"
+     alluxio fs policy add /alluxio_union_mount "migrate_from_hdfs_to_cloud:ufsMigrate(olderThan(3d), UFS[s3_mount]:STORE)"
 
 Copy data from the hdfs_mount to the s3_mount, when a file is unused for 3 days:
 
@@ -201,7 +201,7 @@ Remove the policy
 
 Remove the union filesystem mount
 
-     alluxio fs unmount /union_mount
+     alluxio fs unmount /alluxio_union_mount
 
 ---
 
