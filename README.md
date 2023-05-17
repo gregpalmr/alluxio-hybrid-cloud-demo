@@ -69,6 +69,16 @@ The following diagram illustrates the demo environment:
 
 ![Alt text](/images/alluxio-hybrid-cloud-demo-emr-env.png?raw=true "Alluxio Hybrid Cloud Demo Environment")
 
+First, make sure your AWS CLI commands work with your AWS credentials (in ~/.aws/credentials). Make sure the following commands work:
+
+     aws sts get-caller-identity --output json
+
+     aws s3 ls /
+
+If these command work, proceed. If not, following AWS CLI setup steps show in:
+
+     https://docs.aws.amazon.com/cli/latest/userguide/getting-started-quickstart.html
+
 Use the provided launch-demo.sh script to launch the demo environment. Run the command:
 
      scripts/launch-demo.sh
