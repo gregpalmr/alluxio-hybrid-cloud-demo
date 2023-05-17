@@ -17,9 +17,9 @@ To use the commands outlined in the repo, you will need the following:
 
 - Your AWS credentials defined defined in the `~/.aws/credentials`, like this:
 
-     - [default]
-     - aws_access_key_id=[AWS ACCESS KEY]
-     - aws_secret_access_key=[AWS SECRET KEY]
+     ```[default]
+     aws_access_key_id=[AWS ACCESS KEY]
+     aws_secret_access_key=[AWS SECRET KEY]'''
 
 - You also need IAM role membership and permissions to create the following objects:
      - AWS Key Pairs
