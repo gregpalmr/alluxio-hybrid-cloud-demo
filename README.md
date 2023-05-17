@@ -73,6 +73,14 @@ Use the provided launch-demo.sh script to launch the demo environment. Run the c
 
      scripts/launch-demo.sh
 
+If you get any "Error" messages during the "terraform apply" command phase, check the output file to view the error messages:
+
+     cat terraform-apply.out
+
+or
+
+     cat terraform/terraform-apply.out
+
 # Demo Presentation Instructions
 
 ## Step 1. Show Alluxio Unified Namespace
