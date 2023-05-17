@@ -119,7 +119,11 @@ Also talk about how Alluxio supports pinning data so that it remains in the cach
 
 Finally, talk about how Alluxio supports time-to-live (TTL) attributes that can cause data to be cached for a certain amount of time (1 day for instance), and then the data can be automatically purched from the cached, and even deleted from the understore as well.
 
-## Step 3. Show how Alluxio caches metadata as well
+## Step 3. Show how Alluxio improves performance of Spark jobs too 
+
+TBD
+
+## Step 4. Show how Alluxio caches metadata as well
 
 Talk about how Alluxio cached metadata and can update metadata on a schedule (every 5 minutes by default) or in an on-demand fashion.
 
@@ -151,7 +155,7 @@ Finally, re-run the Presto query to show the updated data. In the "ON-PREM STORA
 
      presto-cli --catalog onprem --schema default --execute "select * from students;"
 
-## Step 4. Discuss Alluxio's policy driven data management (PDDM) capabilities
+## Step 5. Discuss Alluxio's policy driven data management (PDDM) capabilities
 
 TBD
 
@@ -176,7 +180,7 @@ On the CLOUD COMPUTE environment, cause Alluxio to do a metadata sync
 
      alluxio fs loadMetadata /
 
-# Step 4. Manage the policy
+# Step 6. Show how Alluxio manages the PDDM policies
 
 See what the initial delay is for new policies (defaults to 5m), 
 
@@ -198,6 +202,8 @@ Remove the policy
 Remove the union filesystem mount
 
      alluxio fs unmount /union_mount
+
+---
 
 # Manually launch demo environment
 
