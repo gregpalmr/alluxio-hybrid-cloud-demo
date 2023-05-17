@@ -205,7 +205,7 @@ Remove the union filesystem mount
 
 ---
 
-# Manually launch demo environment
+# (Optional) Manually launch demo environment
 
 ## Step 1. Create SSH keys
 
