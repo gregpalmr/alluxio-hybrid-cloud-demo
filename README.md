@@ -7,7 +7,7 @@ Alluxio Data Orchestration enables data consumers to access data anyware in the 
 
 This git repo contains instructions and artifacts for launching an Alluxio hybrid cloud demo environment.
 
-## Pre-requesites
+## Prerequesites
 
 To use the commands outlined in the repo, you will need the following:
 
@@ -47,162 +47,19 @@ In the "Launch Demo" terminal tab, clone this git repo with the commands:
 
      git clone https://github.com/gregpalmr/alluxio-hybrid-cloud-demo
 
-     cd alluxio-hybrid-cloud-demo/terraform/
+     cd alluxio-hybrid-cloud-demo
 
-## Step 3. Create SSH keys
+## Step 3. Launch the demo cluster
 
-Generate a private and public ssh key for use by the AWS EC2 instances, using this command:
+The Alluxio hybrid-cloud demo launches two EMR clusters, one that represents an ON-PREM data center, running Hadoop and an HDFS data store, and another EMR cluster that represents the CLOUD environment running user workloads such as Presto and Spark with Alluxio acting as the local data provider.
 
-     ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa <<< y
+The following diagram illustrates the demo environment:
 
-## Step 4. Update the Terraform variables file
+![Alt text](/images/alluxio-hybrid-cloud-demo-emr-env.png?raw=true "Alluxio Hybrid Cloud Demo Environment")
 
-A Terraform template is used to launch both the on-prem storage and cloud compute portions of the demo environment. For security reasons, the Terraform template specifies which IP addresses can SSH into the various EC2 instances via port 22. You will need to modify the local_ip_as_cidr variable in the terraform.tfvars file to the public IP address for your computer. To get your public ip address use the following commands:
+Use the provided launch-demo.sh script to launch the demo environment. Run the command:
 
-On MacOS:
-
-     echo "local_ip_as_cidr = \"$(curl ifconfig.me)/32\"" >> terraform.tfvars
-     
-On Windows 10 or Windows 11, point your Web browser to this web page and read your public IPv4 ip address on the upper right side of the page:
-
-     https://www.whatismyip.com
-     
-Then edit your terraform.tfvars file with the command:
-
-    notepad terraform.tfvars
-    
-And add the line: 
-
-     local_ip_as_cidr = "< my public ip address >"
-
-If you are simply experimenting with this demo environment and don't need to use larger, more expensive EC2 instance types, then you can modify the EC2 instance types used by the Terraform templates. Run the following grep command to see what files must be modified to use different EC2 instances.
-
-     grep -R xlarge
-     
-     ./main.tf:  on_prem_master_instance_type = "r4.4xlarge"
-     ./main.tf:  on_prem_worker_instance_type = "r4.4xlarge"
-     ./main.tf:  compute_master_instance_type = "r4.4xlarge"
-     ./main.tf:  compute_worker_instance_type = "r5d.4xlarge"
-     ./alluxio/alluxio_cloud_cluster/aws/variables_emr.tf:    instance_type   = "r4.xlarge"
-     ./alluxio/alluxio_cloud_cluster/aws/variables_emr.tf:    instance_type   = "r4.xlarge"
-     ./alluxio/cloud_cluster/aws/variables_emr.tf:    instance_type   = "r4.xlarge"
-     ./alluxio/cloud_cluster/aws/variables_emr.tf:    instance_type   = "r4.xlarge"
-
-Modify the following files to use smaller instance types such as r4.2xlarge, r4.xlarge, r5d.2xlarge or r5d.xlarge:
-
-     ./main.tf
-     ./alluxio/alluxio_cloud_cluster/aws/variables_emr.tf
-     ./alluxio/cloud_cluster/aws/variables_emr.tf
-     
-## Step 5. Launch the demo environment in AWS
-
-Use the terraform cli to launch the Alluxio demo environment in AWS. Use the command:
-
-     terraform init
-     
-     terraform apply
-     
-When both the on-prem and cloud portions of the Alluxio demo environment are launched completely, you will see the public ip addresses of the main cluster nodes for each environment. It will look like this:
-
-     Apply complete! Resources: 48 added, 0 changed, 0 destroyed.
-     
-     Outputs:
-     
-     ssh_to_CLOUD_master_node = "ssh hadoop@ec2-3-84-155-183.compute-1.amazonaws.com"
-     ssh_to_ONPREM_master_node = "ssh hadoop@ec2-54-176-16-121.us-west-1.compute.amazonaws.com"
-
-## Step 6. Load data into the on-prem HDFS storage
-
-In the "ON PREM" ssh terminal tab, open a shell session on the master node in the on-prem demo environment. Copy the SSH command found on the "Outputs" section displayed at the end of the "terraform apply" command. Use the "ssh_to_ONPREM_master_node" command and run it in this terminal tab, like this:
-
-     ssh hadoop@ec2-54-183-19-251.us-west-1.compute.amazonaws.com
-     
-Create a new directory in HDFS, using the command:
-
-     hdfs dfs -mkdir -p /data/tpcds/
-     
-Load data from the tpcds dataset files into HDFS, using the commands:
-
-     s3-dist-cp --src s3a://autobots-tpcds-pregenerated-data/spark/unpart_sf100_10k/store_sales/ --dest hdfs:///data/tpcds/store_sales/
-
-and:
-     
-     s3-dist-cp --src s3a://autobots-tpcds-pregenerated-data/spark/unpart_sf100_10k/item/ --dest hdfs:///data/tpcds/item/
-
-Create the Hive tables that reference the imported tpcds datasets, using the commands:
-
-     wget https://raw.githubusercontent.com/gregpalmr/alluxio-hybrid-cloud-demo/main/resources/hive/create-hive-tables.sql     
-
-     hive -f create-hive-tables.sql
-
-## Step 7. Setup the Presto queries
-
-In the "CLOUD - COMPUTE" ssh terminal tab, open a shell session on the master node in the cloud demo environment. Copy the SSH command found on the "Outputs" section displayed at the end of the "terraform apply" command. Use the "ssh_to_CLOUD_master_node" command and run it in this terminal tab, like this:
-
-     ssh hadoop@ec2-3-84-155-183.compute-1.amazonaws.com
-  
-Download the TPC-DS SQL query to be run in Presto, using the command:
-
-     wget https://raw.githubusercontent.com/gregpalmr/alluxio-hybrid-cloud-demo/main/resources/presto/tpcds-query-44.sql
-     
-Run the first iteration of the TPC/DS Q44 SQL query. This Presto query will run against the Alluxio file system before any data has been cached, so it will be slower. Later you will run it again when that cache has been warmed and will compare the times. Use the Presto cli command:
-
-     presto-cli --catalog onprem --schema default < tpcds-query-44.sql
-
-## Step 8. Mount other Alluxio UFSs
-
-This Alluxio demo illustrates the use of Alluxio's unified namespace capability, so we will mount other under stores to use within the unified namespace. Alluxio is already configured with a "root" understore that points to the "on-prem" Hadoop enviornment. So we will mount an S3 under store and a union mount with both S3 and HDFS understores combined in a single mount point.  
-
-Mount the NYC taxi ride public data set as an S3 bucket using the command:
-
-     /opt/alluxio/bin/alluxio fs mount \
-          /alluxio_s3_mount/ \
-          s3://nyc-tlc/trip\ data/
-
-Mount the "on-prem" HDFS storage environment as an understore. To get the URL to the "on-prem" HDFS Namenode, look at the Alluxio properties file and see how it was used as the root "/" ufs. Use this command:
-
-     grep root.ufs /opt/alluxio/conf/alluxio-site.properties
-     alluxio.master.mount.table.root.ufs=hdfs://ip-79-109-9-240.us-west-1.compute.internal:8020/
-
-Mount the "on-prem" HDFS as a separate mount point using the command:
-
-     alluxio fs mount \
-	      --option alluxio.underfs.version=hadoop-2.8 \
-        /alluxio_hdfs_mount hdfs://hdfs://ip-79-109-9-240.us-west-1.compute.internal:8020/data
-        
-Finally, create a UNION mount in Alluxio that includes both the S3 and the HDFS under stores. Use this command:
-
-     /opt/alluxio/bin/alluxio fs mount \
-	--option alluxio-union.hdfs_mount.uri=hdfs://ip-79-109-9-240.us-west-1.compute.internal:8020/data \
-	--option alluxio-union.hdfs_mount.option.alluxio.underfs.version=hadoop-3.2 \
-		\
-	--option alluxio-union.s3_mount.uri=s3://nyc-tlc/trip\ data/ \
-                \
-	--option alluxio-union.priority.read=hdfs_mount,s3_mount \
-	--option alluxio-union.collection.create=hdfs_mount \
-	/alluxio_union_mount union://union_mount_ufs/
-
-## Step 9. Display the Alluxio and Presto Web UIs
-
-Point your web browser to the "cloud compute" cluster's master node and display the Alluxio web UI:
-
-     http://ec2-18-212-208-181.compute-1.amazonaws.com:19999
-     
-Point your web browser to the "cloud compute" cluster's master node and display the Presto web UI:
-
-     http://ec2-18-212-208-181.compute-1.amazonaws.com:8889
-
-## Step 10. Display the Grafana monitoring Web UI
-
-Point your web browser to the "cloud compute" cluster's master node and display the Grafana web UI:
-
-     http://ec2-18-212-208-181.compute-1.amazonaws.com:3000
-
-## Step 11. Re-run the Presto TPD-DS Q44 Query
-
-Run the Presto query again, so we can compare the cold cache vs warm cache performance. Use this command on the "CLOUD COMPUTE" shell session:
-
-          presto-cli --catalog onprem --schema default < tpcds-query-44.sql
+     scripts/launch-demo.sh
 
 # Demo Presentation Instructions
 
@@ -262,7 +119,165 @@ Remove the union filesystem mount
 
      alluxio fs unmount /union_mount
 
-# Destroy the Demo Environment
+# Manually launch demo environment
+
+## Step 1. Create SSH keys
+
+Generate a private and public ssh key for use by the AWS EC2 instances, using this command:
+
+     ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa <<< y
+
+## Step 2. Update the Terraform variables file
+
+A Terraform template is used to launch both the on-prem storage and cloud compute portions of the demo environment. For security reasons, the Terraform template specifies which IP addresses can SSH into the various EC2 instances via port 22. You will need to modify the local_ip_as_cidr variable in the terraform.tfvars file to the public IP address for your computer. To get your public ip address use the following commands:
+
+On MacOS:
+
+     echo "local_ip_as_cidr = \"$(curl ifconfig.me)/32\"" >> terraform.tfvars
+     
+On Windows 10 or Windows 11, point your Web browser to this web page and read your public IPv4 ip address on the upper right side of the page:
+
+     https://www.whatismyip.com
+     
+Then edit your terraform.tfvars file with the command:
+
+    notepad terraform.tfvars
+    
+And add the line: 
+
+     local_ip_as_cidr = "< my public ip address >"
+
+If you are simply experimenting with this demo environment and don't need to use larger, more expensive EC2 instance types, then you can modify the EC2 instance types used by the Terraform templates. Run the following grep command to see what files must be modified to use different EC2 instances.
+
+     grep -R xlarge
+     
+     ./main.tf:  on_prem_master_instance_type = "r4.4xlarge"
+     ./main.tf:  on_prem_worker_instance_type = "r4.4xlarge"
+     ./main.tf:  compute_master_instance_type = "r4.4xlarge"
+     ./main.tf:  compute_worker_instance_type = "r5d.4xlarge"
+     ./alluxio/alluxio_cloud_cluster/aws/variables_emr.tf:    instance_type   = "r4.xlarge"
+     ./alluxio/alluxio_cloud_cluster/aws/variables_emr.tf:    instance_type   = "r4.xlarge"
+     ./alluxio/cloud_cluster/aws/variables_emr.tf:    instance_type   = "r4.xlarge"
+     ./alluxio/cloud_cluster/aws/variables_emr.tf:    instance_type   = "r4.xlarge"
+
+Modify the following files to use smaller instance types such as r4.2xlarge, r4.xlarge, r5d.2xlarge or r5d.xlarge:
+
+     ./main.tf
+     ./alluxio/alluxio_cloud_cluster/aws/variables_emr.tf
+     ./alluxio/cloud_cluster/aws/variables_emr.tf
+     
+## Step 3. Launch the demo environment in AWS
+
+Use the terraform cli to launch the Alluxio demo environment in AWS. Use the command:
+
+     terraform init
+     
+     terraform apply
+     
+When both the on-prem and cloud portions of the Alluxio demo environment are launched completely, you will see the public ip addresses of the main cluster nodes for each environment. It will look like this:
+
+     Apply complete! Resources: 48 added, 0 changed, 0 destroyed.
+     
+     Outputs:
+     
+     ssh_to_CLOUD_master_node = "ssh hadoop@ec2-3-84-155-183.compute-1.amazonaws.com"
+     ssh_to_ONPREM_master_node = "ssh hadoop@ec2-54-176-16-121.us-west-1.compute.amazonaws.com"
+
+## Step 4. Load data into the on-prem HDFS storage
+
+In the "ON PREM" ssh terminal tab, open a shell session on the master node in the on-prem demo environment. Copy the SSH command found on the "Outputs" section displayed at the end of the "terraform apply" command. Use the "ssh_to_ONPREM_master_node" command and run it in this terminal tab, like this:
+
+     ssh hadoop@ec2-54-183-19-251.us-west-1.compute.amazonaws.com
+     
+Create a new directory in HDFS, using the command:
+
+     hdfs dfs -mkdir -p /data/tpcds/
+     
+Load data from the tpcds dataset files into HDFS, using the commands:
+
+     s3-dist-cp --src s3a://autobots-tpcds-pregenerated-data/spark/unpart_sf100_10k/store_sales/ --dest hdfs:///data/tpcds/store_sales/
+
+and:
+     
+     s3-dist-cp --src s3a://autobots-tpcds-pregenerated-data/spark/unpart_sf100_10k/item/ --dest hdfs:///data/tpcds/item/
+
+Create the Hive tables that reference the imported tpcds datasets, using the commands:
+
+     wget https://raw.githubusercontent.com/gregpalmr/alluxio-hybrid-cloud-demo/main/resources/hive/create-hive-tables.sql     
+
+     hive -f create-hive-tables.sql
+
+## Step 5. Setup the Presto queries
+
+In the "CLOUD - COMPUTE" ssh terminal tab, open a shell session on the master node in the cloud demo environment. Copy the SSH command found on the "Outputs" section displayed at the end of the "terraform apply" command. Use the "ssh_to_CLOUD_master_node" command and run it in this terminal tab, like this:
+
+     ssh hadoop@ec2-3-84-155-183.compute-1.amazonaws.com
+  
+Download the TPC-DS SQL query to be run in Presto, using the command:
+
+     wget https://raw.githubusercontent.com/gregpalmr/alluxio-hybrid-cloud-demo/main/resources/presto/tpcds-query-44.sql
+     
+Run the first iteration of the TPC/DS Q44 SQL query. This Presto query will run against the Alluxio file system before any data has been cached, so it will be slower. Later you will run it again when that cache has been warmed and will compare the times. Use the Presto cli command:
+
+     presto-cli --catalog onprem --schema default < tpcds-query-44.sql
+
+## Step 6. Mount other Alluxio UFSs
+
+This Alluxio demo illustrates the use of Alluxio's unified namespace capability, so we will mount other under stores to use within the unified namespace. Alluxio is already configured with a "root" understore that points to the "on-prem" Hadoop enviornment. So we will mount an S3 under store and a union mount with both S3 and HDFS understores combined in a single mount point.  
+
+Mount the NYC taxi ride public data set as an S3 bucket using the command:
+
+     /opt/alluxio/bin/alluxio fs mount \
+          /alluxio_s3_mount/ \
+          s3://nyc-tlc/trip\ data/
+
+Mount the "on-prem" HDFS storage environment as an understore. To get the URL to the "on-prem" HDFS Namenode, look at the Alluxio properties file and see how it was used as the root "/" ufs. Use this command:
+
+     grep root.ufs /opt/alluxio/conf/alluxio-site.properties
+     alluxio.master.mount.table.root.ufs=hdfs://ip-79-109-9-240.us-west-1.compute.internal:8020/
+
+Mount the "on-prem" HDFS as a separate mount point using the command:
+
+     alluxio fs mount \
+	      --option alluxio.underfs.version=hadoop-2.8 \
+        /alluxio_hdfs_mount hdfs://hdfs://ip-79-109-9-240.us-west-1.compute.internal:8020/data
+        
+Finally, create a UNION mount in Alluxio that includes both the S3 and the HDFS under stores. Use this command:
+
+     /opt/alluxio/bin/alluxio fs mount \
+	--option alluxio-union.hdfs_mount.uri=hdfs://ip-79-109-9-240.us-west-1.compute.internal:8020/data \
+	--option alluxio-union.hdfs_mount.option.alluxio.underfs.version=hadoop-3.2 \
+		\
+	--option alluxio-union.s3_mount.uri=s3://nyc-tlc/trip\ data/ \
+                \
+	--option alluxio-union.priority.read=hdfs_mount,s3_mount \
+	--option alluxio-union.collection.create=hdfs_mount \
+	/alluxio_union_mount union://union_mount_ufs/
+
+## Step 7. Display the Alluxio and Presto Web UIs
+
+Point your web browser to the "cloud compute" cluster's master node and display the Alluxio web UI:
+
+     http://ec2-18-212-208-181.compute-1.amazonaws.com:19999
+     
+Point your web browser to the "cloud compute" cluster's master node and display the Presto web UI:
+
+     http://ec2-18-212-208-181.compute-1.amazonaws.com:8889
+
+## Step 8. Display the Grafana monitoring Web UI
+
+Point your web browser to the "cloud compute" cluster's master node and display the Grafana web UI:
+
+     http://ec2-18-212-208-181.compute-1.amazonaws.com:3000
+
+## Step 9. Re-run the Presto TPD-DS Q44 Query
+
+Run the Presto query again, so we can compare the cold cache vs warm cache performance. Use this command on the "CLOUD COMPUTE" shell session:
+
+          presto-cli --catalog onprem --schema default < tpcds-query-44.sql
+
+
+## Destroy the Demo Environment
 
 Use these commands to destroy the demo environment:
 
