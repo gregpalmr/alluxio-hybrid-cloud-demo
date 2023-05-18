@@ -157,11 +157,13 @@ During the demo setup procedure above, The TPC-DS Q44 Presto query was run again
 
 In the Presto UI, show how the first run of the query took longer because it was against a "cold" cache environment. Enable viewing of completed jobs, by clicking on the "Finished" jobs filter button. 
 
+![Alt text](/images/alluxio-hybrid-cloud-demo-presto-ui.png?raw=true "Alluxio Speeding up Presto queries")
+
 Then scroll down to the bottom of the listing and show the first Q44 job results and show that it took about 3 minutes and 30 seconds (3.5 mins). 
 
 Then scroll up a little, and show the second Q44 job and show that it took about 2 minutes and 30 seconds (2.5 mins) and state that it was faster because the Presto job did not have to get all the data from the "on-prem" data center, but was able to read Alluxio's cached data in the same cloud region as the Presto servers.
 
-To reinforce that, display the Alluxio Web UI and in the "Overview" page show that about 60 GB of data was cached after the first run of the Presto query. 
+To reinforce that, display the Alluxio Web UI and in the "Overview" page show that about 48.15 GB of data was cached after the first run of the Presto query. 
 
 ![Alt text](/images/alluxio-hybrid-cloud-demo-alluxio-ui-1.png?raw=true "Alluxio Cache Storage Usage")
 
