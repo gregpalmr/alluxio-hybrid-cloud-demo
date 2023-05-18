@@ -374,6 +374,7 @@ TODO:
 
 - Added YARN resource manager Web ui
 - Get prometheus scrape rule to include Alluxio worker nodes
+- Save the presto query output to a file
 
 ---
 
