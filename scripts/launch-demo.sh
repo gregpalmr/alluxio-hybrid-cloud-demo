@@ -161,15 +161,12 @@
     exit -1
   fi
 
-  echo
   show_msg "The demo EMR master node IP addresses are:"
   show_msg "    ONPREM: ${onprem_ip_address}"
   show_msg "    CLOUD:  ${cloud_ip_address}"
-  echo
   show_msg "You can SSH into the master nodes with the following commands:"
   show_msg "    ONPREM: ssh hadoop@${onprem_ip_address}"
   show_msg "    CLOUD:  ssh hadoop@${cloud_ip_address}"
-  echo
 
   # Load the TPC-DS data sets into the ONPREM Hadoop cluster
   show_msg "Loading the TPC-DS data sets in the ONPREM Hadoop cluster"
@@ -214,7 +211,7 @@
   show_msg "     Alluxio UI:      http://${cloud_ip_address}:19999"
   show_msg "     Presto  UI:      http://${cloud_ip_address}:8889"
   show_msg "     Prometheus UI:   http://${cloud_ip_address}:9090"
-  show_msg "     Grafana UI:      http://${cloud_ip_address}:3000 (admin/admin)"
+  show_msg "     Grafana UI:      http://${cloud_ip_address}:3000 \(admin/admin\)"
   show_msg "     Spark Master UI: http://${cloud_ip_address}:8080"
   echo
 
