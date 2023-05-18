@@ -96,4 +96,15 @@ resource "aws_security_group" "alluxio" {
       cidr_blocks = var.alluxio_web_ui_rule_cidr_blocks
     }
   }
+
+  dynamic "ingress" {
+    for_each = length(var.alluxio_web_ui_rule_cidr_blocks) > 0 ? [""] : []
+    content {
+      description = "Spark History Server web UI default port"
+      from_port   = 8020
+      to_port     = 8020
+      protocol    = "TCP"
+      cidr_blocks = var.alluxio_web_ui_rule_cidr_blocks
+    }
+  }
 }

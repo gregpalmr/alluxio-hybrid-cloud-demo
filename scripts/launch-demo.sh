@@ -204,21 +204,20 @@
     exit -1
   fi
 
-  echo 
   show_msg "The following URLs will be launched in your web browser."
   show_msg "If you don't see them, open the URLs in your browser:"
-  show_msg "     Alluxio UI:      http://${cloud_ip_address}:19999"
-  show_msg "     Presto  UI:      http://${cloud_ip_address}:8889"
-  show_msg "     Prometheus UI:   http://${cloud_ip_address}:9090"
-  show_msg "     Grafana UI:      http://${cloud_ip_address}:3000 - Use admin/admin"
-  show_msg "     Spark Master UI: http://${cloud_ip_address}:8080"
+  show_msg "     Alluxio UI:       http://${cloud_ip_address}:19999"
+  show_msg "     Presto  UI:       http://${cloud_ip_address}:8889"
+  show_msg "     Prometheus UI:    http://${cloud_ip_address}:9090"
+  show_msg "     Grafana UI:       http://${cloud_ip_address}:3000 - Use admin/admin"
+  show_msg "     Spark History UI: http://${cloud_ip_address}:8020"
 
   if [ "$this_os" == "MacOS" ]; then
     open http://${cloud_ip_address}:19999
     open http://${cloud_ip_address}:8889
     open http://${cloud_ip_address}:9090
     open http://${cloud_ip_address}:3000
-    open http://${cloud_ip_address}:8080
+    open http://${cloud_ip_address}:8020
   fi
 
   # Setup and run the Presto TPC-DS queries
@@ -254,9 +253,10 @@
 
   # Run the TPC-DS Q44 presto query two more times - to get the Alluxio cache hit rate above 50%
   show_msg "Running the TPC-DS Q44 Presto query two more times, in the CLOUD Presto/Alluxio cluster."
+  sleep 30
   cmd="presto-cli --catalog onprem --schema default < tpcds-query-44.sql"
   ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} ${cmd} &>/dev/null
-  sleep 10
+  sleep 70
   ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} ${cmd} &>/dev/null
 
   show_msg ""
