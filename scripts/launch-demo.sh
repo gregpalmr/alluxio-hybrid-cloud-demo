@@ -206,14 +206,12 @@
 
   echo 
   show_msg "The following URLs will be launched in your web browser."
-  show_msg "If you don't see them, open the URLs in your browser:
-  echo
+  show_msg "If you don't see them, open the URLs in your browser:"
   show_msg "     Alluxio UI:      http://${cloud_ip_address}:19999"
   show_msg "     Presto  UI:      http://${cloud_ip_address}:8889"
   show_msg "     Prometheus UI:   http://${cloud_ip_address}:9090"
-  show_msg "     Grafana UI:      http://${cloud_ip_address}:3000 \(admin/admin\)"
+  show_msg "     Grafana UI:      http://${cloud_ip_address}:3000 - Use admin/admin"
   show_msg "     Spark Master UI: http://${cloud_ip_address}:8080"
-  echo
 
   if [ "$this_os" == "MacOS" ]; then
     open http://${cloud_ip_address}:19999
