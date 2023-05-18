@@ -95,6 +95,14 @@ or
 
      cat terraform/terraform-apply.out
 
+When the script completes, you will see output like this:
+
+     TBD
+
+Also, on a Macbook, the script will launch the Web browser pages for the Alluxio, Presto, Grafana and Spark History server UIs.  
+
+To finalize the demo environment setup, use the provided SSH commands to SSH into the ON-PREM master node and the CLOUD master node in your terminal session tabs.
+
 # Demo Presentation Instructions
 
 ## Step 1. Show the Alluxio Unified Namespace features
@@ -117,9 +125,17 @@ Then scroll down to the bottom of the listing and show the first Q44 job results
 
 Then scroll up a little, and show the second Q44 job and show that it took about 2 minutes and 30 seconds (2.5 mins) and state that it was faster because the Presto job did not have to get all the data from the "on-prem" data center, but was able to read Alluxio's cached data in the same cloud region as the Presto servers.
 
-To reinforce that, display the Alluxio Web UI and in the "Overview" page show that about 60 GB of data was cached after the first run of the Presto query. Also show the "Workers" page and show that each Alluxio worker node cached some of that data, about equal amounts of it. 
+To reinforce that, display the Alluxio Web UI and in the "Overview" page show that about 60 GB of data was cached after the first run of the Presto query. 
 
-Bring up the Grafana UI (log in with admin/admin) and show the "Cache Hit Rate" dashboard panel that shows that over 50% of the data was read from cache storage. Discuss how the cache hit rate improved with each of the Presto query jobs. Also show the Grafana panel "Remote Reads" and show how the amount of reads to the understore (HDFS on-prem) was reduced each time the query jobs ran.
+![Alt text](/images/alluxio-hybrid-cloud-demo-alluxio-ui-1.png?raw=true "Alluxio Cache Storage Usage")
+
+Also show the "Workers" page and show that each Alluxio worker node cached some of that data, about equal amounts of it. 
+
+![Alt text](/images/alluxio-hybrid-cloud-demo-alluxio-ui-2.png?raw=true "Alluxio Worker Cache Storage Usage")
+
+Bring up the Grafana UI (log in with admin/admin) and show the "Cache Hit Rate" dashboard panel that shows that over 50% of the data was read from cache storage. Discuss how the cache hit rate improved with each additional run of the Presto query job. Also show the Grafana panel "Remote Reads" and show how the amount of reads to the understore (HDFS on-prem) was reduced each time the query jobs ran.
+
+![Alt text](/images/alluxio-hybrid-cloud-demo-grafana-cache-hit-bytes-read.png?raw=true "Alluxio Worker Cache Hit Rate & Bytes Read")
 
 Talk about how Alluxio also supports pre-loading data into cache storage in advance of end-user data access requests. 
 
