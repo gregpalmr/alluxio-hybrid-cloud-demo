@@ -133,9 +133,13 @@ Also show the "Workers" page and show that each Alluxio worker node cached some 
 
 ![Alt text](/images/alluxio-hybrid-cloud-demo-alluxio-ui-2.png?raw=true "Alluxio Worker Cache Storage Usage")
 
-Bring up the Grafana UI (log in with admin/admin) and show the "Cache Hit Rate" dashboard panel that shows that over 50% of the data was read from cache storage. Discuss how the cache hit rate improved with each additional run of the Presto query job. Also show the Grafana panel "Remote Reads" and show how the amount of reads to the understore (HDFS on-prem) was reduced each time the query jobs ran.
+Bring up the Grafana UI (log in with admin/admin) and show the "Cache Hit Rate" dashboard panel that shows that over 50% of the data was read from cache storage, as Alluxio was warming the cache. Discuss how the cache hit rate improved with each additional run of the Presto query job and will continue to improve with addes user loads. Most customers get into the 80% to 95% cache hit rate levels. 
 
 ![Alt text](/images/alluxio-hybrid-cloud-demo-grafana-cache-hit-bytes-read.png?raw=true "Alluxio Worker Cache Hit Rate & Bytes Read")
+
+Also show the Grafana "Bytes Read UFS (Per Minute)" panel and discuss how, after the first Presto query job ran, the amount of reads to the understore (on-prem HDFS) were eliminated in the last two runs of the query jobs because Alluxio already had the data cached and did not have to reach accross to the data center to get the data.
+
+![Alt text](/images/alluxio-hybrid-cloud-demo-grafana-ufs-bytes-read.png?raw=true "Alluxio Reduced UFS reads")
 
 Talk about how Alluxio also supports pre-loading data into cache storage in advance of end-user data access requests. 
 
