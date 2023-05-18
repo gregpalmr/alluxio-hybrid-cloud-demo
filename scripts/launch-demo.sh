@@ -222,7 +222,7 @@
 
   # Setup and run the Presto TPC-DS queries
   show_msg "Running the TPC-DS Q44 Presto query in the CLOUD Presto/Alluxio cluster."
-  show_msg "This first run will be slow becuase the Alluxio cache is not warmed up yet."
+  show_msg "This first run will be slow because the Alluxio cache is not warmed up yet."
 
   cmd="wget https://raw.githubusercontent.com/gregpalmr/alluxio-hybrid-cloud-demo/main/resources/presto/tpcds-query-44.sql"
   ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} ${cmd} &>/dev/null

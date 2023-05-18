@@ -125,7 +125,7 @@ $ scripts/launch-demo.sh
  05/18/23 14:20:27 -      Grafana UI:       http://ec2-54-209-145-148.compute-1.amazonaws.com:3000 - Use admin/admin
  05/18/23 14:20:27 -      Spark History UI: http://ec2-54-209-145-148.compute-1.amazonaws.com:8020
  05/18/23 14:20:28 - Running the TPC-DS Q44 Presto query in the CLOUD Presto/Alluxio cluster.
- 05/18/23 14:20:28 - This first run will be slow becuase the Alluxio cache is not warmed up yet.
+ 05/18/23 14:20:28 - This first run will be slow because the Alluxio cache is not warmed up yet.
  05/18/23 14:26:32 - Running the TPC-DS Q44 Presto query two more times, in the CLOUD Presto/Alluxio cluster.
  05/18/23 14:33:18 -
  05/18/23 14:33:18 - To destroy the cluster, and run the command:
@@ -155,13 +155,15 @@ Finally, discuss how this, combined with Alluxio's multiple application APIs (Ja
 
 During the demo setup procedure above, The TPC-DS Q44 Presto query was run against Alluxio three times. 
 
-In the Presto UI, show how the first run of the query took longer because it was against a "cold" cache environment. Enable viewing of completed jobs, by clicking on the "Finished" jobs filter button. 
+In the Presto UI, show how the first run of the query took longer because it was against a "cold" cache environment. 
+
+Enable viewing of completed jobs, by clicking on the "Finished" jobs filter button. Also, type "store_sales" in the Presto search bar to view only finished jobs that query the TPC/DS store_sales Hive table.
 
 ![Alt text](/images/alluxio-hybrid-cloud-demo-presto-ui.png?raw=true "Alluxio Speeding up Presto queries")
 
 Then scroll down to the bottom of the listing and show the first Q44 job results and show that it took about 3 minutes and 30 seconds (3.5 mins). 
 
-Then scroll up a little, and show the second Q44 job and show that it took about 2 minutes and 30 seconds (2.5 mins) and state that it was faster because the Presto job did not have to get all the data from the "on-prem" data center, but was able to read Alluxio's cached data in the same cloud region as the Presto servers.
+Then scroll up a little and show the second Q44 job and show that it took about 2 minutes and 30 seconds (2.5 mins) and state that it was faster because the Presto job did not have to get all the data from the "on-prem" data center, but was able to read Alluxio's cached data in the same cloud region as the Presto servers.
 
 To reinforce that, display the Alluxio Web UI and in the "Overview" page show that about 48.15 GB of data was cached after the first run of the Presto query. 
 
@@ -175,7 +177,7 @@ Bring up the Grafana UI (log in with admin/admin) and show the "Cache Hit Rate" 
 
 ![Alt text](/images/alluxio-hybrid-cloud-demo-grafana-cache-hit-bytes-read.png?raw=true "Alluxio Worker Cache Hit Rate & Bytes Read")
 
-Also show the Grafana "Bytes Read UFS (Per Minute)" panel and discuss how, after the first Presto query job ran, the amount of reads to the understore (on-prem HDFS) were reduced (actually eliminated in this casE) during the last two runs of the query jobs because Alluxio already had the data cached and did not have to reach accross to the data center to get the data.
+Also show the Grafana "Bytes Read UFS (Per Minute)" panel and discuss how, after the first Presto query job ran, the amount of reads to the under store (on-prem HDFS) were reduced (actually eliminated in this case) during the last two runs of the query jobs because Alluxio already had the data cached and did not have to reach across to the data center to get the data.
 
 ![Alt text](/images/alluxio-hybrid-cloud-demo-grafana-ufs-bytes-read.png?raw=true "Alluxio Reduced UFS reads")
 
@@ -183,7 +185,7 @@ Talk about how Alluxio also supports pre-loading data into cache storage in adva
 
 Also talk about how Alluxio supports pinning data so that it remains in the cache forever or for a specified amount of time which supports popular data sets that may be used consistently.
 
-Finally, talk about how Alluxio supports time-to-live (TTL) attributes that can cause data to be cached for a certain amount of time (1 day for instance), and then the data can be automatically purged from the cached, and even deleted from the understore as well.
+Finally, talk about how Alluxio supports time-to-live (TTL) attributes that can cause data to be cached for a certain amount of time (1 day for instance), and then the data can be automatically purged from the cached, and even deleted from the under store as well.
 
 ## Step 3. Show how Alluxio improves performance of Spark jobs too 
 
@@ -375,7 +377,7 @@ Run the first iteration of the TPC/DS Q44 SQL query. This Presto query will run 
 
 ## Step 6. Mount other Alluxio UFSs
 
-This Alluxio demo illustrates the use of Alluxio's unified namespace capability, so we will mount other under stores to use within the unified namespace. Alluxio is already configured with a "root" understore that points to the "on-prem" Hadoop environment. So we will mount an S3 under store and a union mount with both S3 and HDFS understores combined in a single mount point.  
+This Alluxio demo illustrates the use of Alluxio's unified namespace capability, so we will mount other under stores to use within the unified namespace. Alluxio is already configured with a "root" under store that points to the "on-prem" Hadoop environment. So we will mount an S3 under store and a union mount with both S3 and HDFS under stores combined in a single mount point.  
 
 Mount the NYC taxi ride public data set as an S3 bucket using the command:
 
@@ -383,7 +385,7 @@ Mount the NYC taxi ride public data set as an S3 bucket using the command:
           /alluxio_s3_mount/ \
           s3://nyc-tlc/trip\ data/
 
-Mount the "on-prem" HDFS storage environment as an understore. To get the URL to the "on-prem" HDFS Namenode, look at the Alluxio properties file and see how it was used as the root "/" ufs. Use this command:
+Mount the "on-prem" HDFS storage environment as an under store. To get the URL to the "on-prem" HDFS Namenode, look at the Alluxio properties file and see how it was used as the root "/" ufs. Use this command:
 
      grep root.ufs /opt/alluxio/conf/alluxio-site.properties
      alluxio.master.mount.table.root.ufs=hdfs://ip-79-109-9-240.us-west-1.compute.internal:8020/
