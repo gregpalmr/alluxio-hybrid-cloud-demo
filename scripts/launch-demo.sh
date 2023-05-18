@@ -131,7 +131,7 @@
   cloud_ip_address_line=$(grep 'ssh_to_CLOUD_master_node = "ssh ' terraform-apply.out)
   cloud_ip_address=$(echo ${cloud_ip_address_line} | cut -d'@' -f 2 | sed 's/"//g')
 
-  onprem_ip_address_line=$(grep 'ssh_to_ONPREM_master_node = "ssh ' terraform-apply.out)
+  onprem_ip_address_line=$(grep '^ssh_to_ONPREM_master_node = "ssh ' terraform-apply.out)
   onprem_ip_address=$(echo ${onprem_ip_address_line} | cut -d'@' -f 2 | sed 's/"//g')
   
   # Check if we can successfully SSH into the master nodes
