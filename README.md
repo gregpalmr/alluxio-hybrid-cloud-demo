@@ -97,7 +97,44 @@ or
 
 When the script completes, you will see output like this:
 
-     TBD
+```
+$ scripts/launch-demo.sh
+ 05/18/23 13:56:16 - Running launch-demo.sh script
+ 05/18/23 13:56:16 - Running on MacOS
+ 05/18/23 13:56:16 - Running script in correct directory "alluxio-hybrid-cloud-demo".
+ 05/18/23 13:56:16 - Public and private SSH keys already exist in "~/.ssh/id_rsa" and "~/.ssh/id_rsa.pub". Skipping.
+ 05/18/23 13:56:16 - Running command: "terraform init". See terraform/terraform-init.out for results.
+ 05/18/23 13:56:19 - Running command: "terraform apply". See terraform/terraform-apply.out for results.
+ 05/18/23 14:17:20 - Command "terraform apply" completed.
+ 05/18/23 14:17:23 - The demo EMR master node IP addresses are:
+ 05/18/23 14:17:23 -     ONPREM: ec2-54-193-98-82.us-west-1.compute.amazonaws.com
+ 05/18/23 14:17:23 -     CLOUD:  ec2-54-209-145-148.compute-1.amazonaws.com
+ 05/18/23 14:17:23 - You can SSH into the master nodes with the following commands:
+ 05/18/23 14:17:23 -     ONPREM: ssh hadoop@ec2-54-193-98-82.us-west-1.compute.amazonaws.com
+ 05/18/23 14:17:23 -     CLOUD:  ssh hadoop@ec2-54-209-145-148.compute-1.amazonaws.com
+ 05/18/23 14:17:23 - Loading the TPC-DS data sets in the ONPREM Hadoop cluster
+ 05/18/23 14:17:27 - Loading store_sales data set
+ 05/18/23 14:18:40 - Loading item data set
+ 05/18/23 14:19:37 - Creating hive tables
+ 05/18/23 14:20:27 - Hive tables created successfully
+
+ 05/18/23 14:20:27 - The following URLs will be launched in your web browser.
+ 05/18/23 14:20:27 - If you don't see them, open the URLs in your browser:
+ 05/18/23 14:20:27 -      Alluxio UI:      http://ec2-54-209-145-148.compute-1.amazonaws.com:19999
+ 05/18/23 14:20:27 -      Presto  UI:      http://ec2-54-209-145-148.compute-1.amazonaws.com:8889
+ 05/18/23 14:20:27 -      Prometheus UI:   http://ec2-54-209-145-148.compute-1.amazonaws.com:9090
+ 05/18/23 14:20:27 -      Grafana UI:      http://ec2-54-209-145-148.compute-1.amazonaws.com:3000 - Use admin/admin
+ 05/18/23 14:20:27 -      Spark Master UI: http://ec2-54-209-145-148.compute-1.amazonaws.com:8080
+ 05/18/23 14:20:28 - Running the TPC-DS Q44 Presto query in the CLOUD Presto/Alluxio cluster.
+ 05/18/23 14:20:28 - This first run will be slow becuase the Alluxio cache is not warmed up yet.
+ 05/18/23 14:26:32 - Running the TPC-DS Q44 Presto query two more times, in the CLOUD Presto/Alluxio cluster.
+ 05/18/23 14:33:18 -
+ 05/18/23 14:33:18 - To destroy the cluster, and run the command:
+ 05/18/23 14:33:18 -
+ 05/18/23 14:33:18 -     cd terraform && terraform destroy -auto-approve
+ 05/18/23 14:33:18 -
+ 05/18/23 14:33:18 - launch-demo.sh script completed
+```
 
 Also, on a Macbook, the script will launch the Web browser pages for the Alluxio, Presto, Grafana and Spark History server UIs.  
 
@@ -137,7 +174,7 @@ Bring up the Grafana UI (log in with admin/admin) and show the "Cache Hit Rate" 
 
 ![Alt text](/images/alluxio-hybrid-cloud-demo-grafana-cache-hit-bytes-read.png?raw=true "Alluxio Worker Cache Hit Rate & Bytes Read")
 
-Also show the Grafana "Bytes Read UFS (Per Minute)" panel and discuss how, after the first Presto query job ran, the amount of reads to the understore (on-prem HDFS) were eliminated in the last two runs of the query jobs because Alluxio already had the data cached and did not have to reach accross to the data center to get the data.
+Also show the Grafana "Bytes Read UFS (Per Minute)" panel and discuss how, after the first Presto query job ran, the amount of reads to the understore (on-prem HDFS) were reduced (actually eliminated in this casE) during the last two runs of the query jobs because Alluxio already had the data cached and did not have to reach accross to the data center to get the data.
 
 ![Alt text](/images/alluxio-hybrid-cloud-demo-grafana-ufs-bytes-read.png?raw=true "Alluxio Reduced UFS reads")
 
