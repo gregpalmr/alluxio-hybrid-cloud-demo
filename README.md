@@ -370,5 +370,11 @@ Use these commands to destroy the demo environment:
      terraform destroy -auto-approve
 
 ---
+TODO:
+
+- Added YARN resource manager Web ui
+- Get prometheus scrape rule to include Alluxio worker nodes
+
+---
 
 Please direct questions or comments to greg.palmer@alluxio.com
