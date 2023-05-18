@@ -1,5 +1,6 @@
 *.swp
 .terraform*
+*.idea
 terraform-init.out
 terraform-apply.out
 terraform-destroy.out
