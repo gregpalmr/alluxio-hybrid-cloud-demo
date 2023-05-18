@@ -446,6 +446,7 @@ TODO:
 - Get prometheus scrape rule to include Alluxio worker nodes
 - Save the presto query output to a file
 - Use embedded mount points instead of UNION mount for unified namespace example
+- Add Zeppelin or JupiterLab noteboot for running Spark workloads
 
 ---
 

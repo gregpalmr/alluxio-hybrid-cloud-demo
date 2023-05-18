@@ -107,4 +107,15 @@ resource "aws_security_group" "alluxio" {
       cidr_blocks = var.alluxio_web_ui_rule_cidr_blocks
     }
   }
+
+  dynamic "ingress" {
+    for_each = length(var.alluxio_web_ui_rule_cidr_blocks) > 0 ? [""] : []
+    content {
+      description = "Yarn RM web UI"
+      from_port   = 8088
+      to_port     = 8088
+      protocol    = "TCP"
+      cidr_blocks = var.alluxio_web_ui_rule_cidr_blocks
+    }
+  }
 }

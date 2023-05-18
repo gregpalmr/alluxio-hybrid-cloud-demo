@@ -208,16 +208,16 @@
   show_msg "If you don't see them, open the URLs in your browser:"
   show_msg "     Alluxio UI:       http://${cloud_ip_address}:19999"
   show_msg "     Presto  UI:       http://${cloud_ip_address}:8889"
-  show_msg "     Prometheus UI:    http://${cloud_ip_address}:9090"
   show_msg "     Grafana UI:       http://${cloud_ip_address}:3000 - Use admin/admin"
   show_msg "     Spark History UI: http://${cloud_ip_address}:8020"
+  show_msg "     Yarn RM UI:       http://${cloud_ip_address}:8088"
 
   if [ "$this_os" == "MacOS" ]; then
     open http://${cloud_ip_address}:19999
     open http://${cloud_ip_address}:8889
-    open http://${cloud_ip_address}:9090
     open http://${cloud_ip_address}:3000
     open http://${cloud_ip_address}:8020
+    open http://${cloud_ip_address}:8088
   fi
 
   # Setup and run the Presto TPC-DS queries
