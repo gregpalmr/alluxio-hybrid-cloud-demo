@@ -61,6 +61,10 @@ In the "Launch Demo" terminal tab, clone this git repo with the commands:
 
      cd alluxio-hybrid-cloud-demo
 
+If you have previously cloned the repo previously and want to refresh the files, run the command:
+
+    git pull
+
 ## Step 3. Launch the demo clusters
 
 The Alluxio hybrid-cloud demo launches two EMR clusters, one that represents an ON-PREM data center, running Hadoop and an HDFS data store, and another EMR cluster that represents the CLOUD environment running user workloads such as Presto and Spark with Alluxio acting as the local data provider.
@@ -375,6 +379,7 @@ TODO:
 - Added YARN resource manager Web ui
 - Get prometheus scrape rule to include Alluxio worker nodes
 - Save the presto query output to a file
+- Use embedded mount points instead of UNION mount for unified namespace example
 
 ---
 
