@@ -238,7 +238,7 @@
 
   # Mount the on-prem HDFS mount in Alluxio in the CLOUD cluster
   cmd="alluxio fs mount --option alluxio.underfs.version=hadoop-2.8 /alluxio_hdfs_mount hdfs://${onprem_ip_address}:8020/data"
-  ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} "${cmd} &>/dev/null
+  ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} "${cmd}" &>/dev/null
 
   # Mount the Alluxio UNION mount in the CLOUD cluster
   cmd="alluxio fs mount \
@@ -259,14 +259,14 @@
   sleep 10
   ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} ${cmd} &>/dev/null
 
-  echo
+  show_msg ""
   #show_msg "The demo cluster will remain up for ${TERMINATE_DEMO_HOURS} hours."
   #echo
   #show_msg "To destroy the cluster manually, press Ctrl-C to exit this script"
   show_msg "To destroy the cluster, and run the command:"
-  echo
-  show_msg "    terraform destroy -auto-approve "
-  echo
+  show_msg ""
+  show_msg "    cd terraform && terraform destroy -auto-approve "
+  show_msg ""
 
   # Wait for 2 hours and then destroy the cluster
   #num_seconds=$((${TERMINATE_DEMO_HOURS}*60))
@@ -281,5 +281,7 @@
   #terraform destroy -auto-approve > terraform-destroy.out 2>&1
 
   cd ${original_dir}
+
+  show_msg "launch-demo.sh script completed"
 
 # end of script
