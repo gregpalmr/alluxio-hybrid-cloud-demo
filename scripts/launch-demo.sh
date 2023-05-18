@@ -10,7 +10,7 @@
   }
 
   # Automatically destroy the demo environment after certain 
-  # number of hours (2 hours default)
+  # number of hours - 2 hours default
   TERMINATE_DEMO_HOURS="2"
 
   show_msg "Running launch-demo.sh script"
@@ -232,8 +232,6 @@
   ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} ${cmd} &>/dev/null
 
   # Mount the S3 bucket in Alluxio in the CLOUD cluster
-  show_msg "Mounting the Alluxio HDFS, S3 and UNION mounts in the CLOUD cluster" 
-  cmd="alluxio fs mkdir /alluxio_s3_mount "
   ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} ${cmd} &>/dev/null
   cmd="alluxio fs mount /alluxio_s3_mount s3://nyc-tlc"
   ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} ${cmd} &>/dev/null
@@ -254,7 +252,7 @@
 			  /alluxio_union_mount union://union_mount_ufs/"
   ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} "${cmd} &>/dev/null"
 
-  # Run the TPC-DS Q44 presto query two more times (to get the Alluxio cache hit rate above 50%)
+  # Run the TPC-DS Q44 presto query two more times - to get the Alluxio cache hit rate above 50%
   show_msg "Running the TPC-DS Q44 Presto query two more times, in the CLOUD Presto/Alluxio cluster."
   cmd="presto-cli --catalog onprem --schema default < tpcds-query-44.sql"
   ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} ${cmd} &>/dev/null
