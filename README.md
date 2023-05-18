@@ -136,7 +136,7 @@ $ scripts/launch-demo.sh
  05/18/23 14:33:18 - launch-demo.sh script completed
 ```
 
-Also, on a Macbook, the script will launch the Web browser pages for the Alluxio, Presto, Grafana and Spark History server UIs.  
+Also, on a Macbook, the script will launch the Web browser pages for the Alluxio, Presto, Grafana, Spark History server and Yarn RM web UIs.  
 
 To finalize the demo environment setup, use the provided SSH commands to SSH into the ON-PREM master node and the CLOUD master node in your terminal session tabs.
 
