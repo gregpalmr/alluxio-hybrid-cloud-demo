@@ -139,6 +139,8 @@ Also, on a Macbook, the script will launch the Web browser pages for the Alluxio
 
 To finalize the demo environment setup, use the provided SSH commands to SSH into the ON-PREM master node and the CLOUD master node in your terminal session tabs.
 
+![Alt text](/images/alluxio-hybrid-cloud-demo-ssh-commands.png?raw=true "SSH commands")
+
 # Demo Presentation Instructions
 
 ## Step 1. Show the Alluxio Unified Namespace features
