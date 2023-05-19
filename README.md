@@ -206,7 +206,10 @@ In the "CLOUD - COMPUTE" ssh session, run a Presto query against the small examp
 
 Show the results of the query and then modify the table in the on-prem environment. In the "ON-PREM STORAGE" ssh session, update the "students" table with the command:
 
-     hive -e "insert overwrite table students values ('fred flintstone', 32), ('barney rubble', 32);"
+     hive -e "insert overwrite table students values 
+              ('fred flintstone', 32), \
+              ('barney rubble', 32), \
+              ('dino', 7);"
 
 and show the contents of the updated table with the command:
 
@@ -220,7 +223,7 @@ It should show the out-dated contents of the Hive table.
 
 Now, have Alluxio update the metadata. In the "ON-PREM STORAGE" ssh session, run the command:
 
-     alluxio fs loadMetadata -R -F /data/
+     alluxio fs loadMetadata -R -F /data/students
 
 Finally, re-run the Presto query to show the updated data. In the "ON-PREM STORAGE" ssh session, run the command:
 
@@ -230,26 +233,32 @@ Finally, re-run the Presto query to show the updated data. In the "ON-PREM STORA
 
 TBD
 
-Copy data from the hdfs_mount to the s3_mount, when a file is older than 1 minute:
+Copy data from the hdfs_mount to the alluxio_s3_mount, when a file is older than 1 minute:
 
-     alluxio fs policy add /alluxio_union_mount "migrate_from_hdfs_to_cloud:ufsMigrate(olderThan(1m), UFS[s3_mount]:STORE)"
+     alluxio fs policy add /alluxio_union_mount \
+             "migrate_from_hdfs_to_cloud:ufsMigrate(olderThan(1m), \
+              UFS[alluxio_s3_mount]:STORE)"
 
-Copy data from the hdfs_mount to the s3_mount, when a file is older than 3 days:
+Copy data from the hdfs_mount to the alluxio_s3_mount, when a file is older than 3 days:
 
-     alluxio fs policy add /alluxio_union_mount "migrate_from_hdfs_to_cloud:ufsMigrate(olderThan(3d), UFS[s3_mount]:STORE)"
+     alluxio fs policy add /alluxio_union_mount \
+             "migrate_from_hdfs_to_cloud:ufsMigrate(olderThan(3d), \
+             UFS[alluxio_s3_mount]:STORE)"
 
-Copy data from the hdfs_mount to the s3_mount, when a file is unused for 3 days:
+Copy data from the hdfs_mount to the alluxio_s3_mount, when a file is unused for 3 days:
 
-     alluxio fs policy add /alluxio_union_mount "migrate_from_hdfs_to_cloud:ufsMigrate(unusedFor(3d), UFS[s3_mount]:STORE)"
+     alluxio fs policy add /alluxio_union_mount \
+             "migrate_from_hdfs_to_cloud:ufsMigrate(unusedFor(3d), \
+             UFS[s3_mount]:STORE)"
 
-Add a new file directly on the UFS (on the ONPREM STORAGE environment)
+Add a new file directly on the UFS. In the ONPREM STORAGE ssh session, run the commands:
 
      hdfs dfs -put /etc/motd hdfs:///tmp/motd2
      hdfs dfs -ls hdfs:///tmp/
 
-On the CLOUD COMPUTE environment, cause Alluxio to do a metadata sync
+On the CLOUD COMPUTE environment, cause Alluxio to do a metadata sync, by running the command:
 
-     alluxio fs loadMetadata /
+     alluxio fs loadMetadata -R /tmp
 
 ## Step 6. Show how Alluxio manages the PDDM policies
 
