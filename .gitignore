@@ -1,6 +1,7 @@
 *.swp
 .terraform*
 *.idea
+.DS_Store
 terraform-init.out
 terraform-apply.out
 terraform-destroy.out
