@@ -214,7 +214,7 @@ Show the results of the query and then modify the table in the on-prem environme
 
      hive -e "insert overwrite table students values 
               ('fred flintstone', 32), \
-              ('barney rubble', 32), \
+              ('barney rubble', 35), \
               ('dino', 7);"
 
 and show the contents of the updated table with the command:
