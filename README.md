@@ -150,6 +150,12 @@ In the Alluxio Web UI, click on the "Browse" tab at the top of the page.
 
 Show the "alluxio_s3_mount" directory and the "alluxio_hdfs_mount" directory and talk about how Alluxio can mount multiple data stores at the same time. 
 
+![Alt text](/images/alluxio-hybrid-cloud-demo-alluxio-ui-browse-1a.png?raw=true "Alluxio Web UI")
+
+![Alt text](/images/alluxio-hybrid-cloud-demo-alluxio-ui-browse-1b.png?raw=true "Alluxio Web UI")
+
+![Alt text](/images/alluxio-hybrid-cloud-demo-alluxio-ui-browse-1c.png?raw=true "Alluxio Web UI")
+
 Then show the "alluxio_union_mount" directory and show how data sets from heterogeneous data stores can be merged into a "unified namespace", so that end-users don't have to know where the data is actually stored. 
 
 Finally, discuss how this, combined with Alluxio's multiple application APIs (Java, HDFS, S3, POSIX file system) can make a very flexible data layer for many client types working with many storage environments through Alluxio.
