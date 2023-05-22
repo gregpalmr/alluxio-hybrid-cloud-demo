@@ -62,7 +62,7 @@ variable "master_config" {
   default = {
     ebs_volume_size = 10
     instance_count  = 1
-    instance_type   = "r4.xlarge"
+    instance_type   = "r4.4xlarge"
   }
 }
 
@@ -82,7 +82,7 @@ variable "worker_config" {
   default = {
     ebs_volume_size = 32
     instance_count  = 1
-    instance_type   = "r4.xlarge"
+    instance_type   = "r5d.4xlarge"
   }
 }
 

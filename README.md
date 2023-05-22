@@ -319,25 +319,19 @@ And add the line:
 
      local_ip_as_cidr = "< my public ip address >"
 
-If you are simply experimenting with this demo environment and don't need to use larger, more expensive EC2 instance types, then you can modify the EC2 instance types used by the Terraform templates. Run the following grep command to see what files must be modified to use different EC2 instances.
+If you are simply experimenting with this demo environment and don't need to use larger, more expensive EC2 instance types, then you can modify the EC2 instance types used by the Terraform templates. 
 
-     grep -R xlarge
-     
-     ./main.tf:  on_prem_master_instance_type = "r4.4xlarge"
-     ./main.tf:  on_prem_worker_instance_type = "r4.4xlarge"
-     ./main.tf:  compute_master_instance_type = "r4.4xlarge"
-     ./main.tf:  compute_worker_instance_type = "r5d.4xlarge"
-     ./alluxio/alluxio_cloud_cluster/aws/variables_emr.tf:    instance_type   = "r4.xlarge"
-     ./alluxio/alluxio_cloud_cluster/aws/variables_emr.tf:    instance_type   = "r4.xlarge"
-     ./alluxio/cloud_cluster/aws/variables_emr.tf:    instance_type   = "r4.xlarge"
-     ./alluxio/cloud_cluster/aws/variables_emr.tf:    instance_type   = "r4.xlarge"
+Modify the terraform/terraform.tfvars file and specify the new EC2 instance types. Be aware that not all EC2 instance types can be used with EMR version 6.2.0 and you can see the list of appropriate instance types here:
 
-Modify the following files to use smaller instance types such as r4.2xlarge, r4.xlarge, r5d.2xlarge or r5d.xlarge:
+     https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-supported-instance-types.html
 
-     ./main.tf
-     ./alluxio/alluxio_cloud_cluster/aws/variables_emr.tf
-     ./alluxio/cloud_cluster/aws/variables_emr.tf
-     
+In the terraform/terraform.tfvars file, change these variables:
+
+     on_prem_master_instance_type = "r4.4xlarge"
+     on_prem_worker_instance_type = "r4.4xlarge"
+     compute_master_instance_type = "r4.4xlarge"
+     compute_worker_instance_type = "r5d.4xlarge"
+
 ## Step 3. Launch the demo environment in AWS
 
 Use the terraform cli to launch the Alluxio demo environment in AWS. Use the command:

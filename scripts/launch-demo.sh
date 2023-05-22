@@ -9,6 +9,12 @@
     echo " `date +"%D %T"` - ${1} "
   }
 
+  function exit_script {
+    show_msg "Exiting."
+    cd ..
+    exit -1
+  }
+
   # Automatically destroy the demo environment after certain 
   # number of hours - 2 hours default
   TERMINATE_DEMO_HOURS="2"
@@ -23,22 +29,22 @@
     CYGWIN*)    this_os=Cygwin;;
     MINGW*)     this_os=MinGw;;
     *)          this_os="UNKNOWN:${unameOut}"
-      show_msg "Error: Running on unknown OS type: \"${this_os}\". Run this script on MacOS or Linux only. Exiting"
-      exit -1
+      show_msg "Error: Running on unknown OS type: \"${this_os}\". Run this script on MacOS or Linux only. "
+      exit_script
   esac
   show_msg "Running on ${this_os}"
 
   # Check if terraform is installed and correct version
   which terraform &>/dev/null
   if [ "$?" != 0 ]; then
-    show_msg "Error: Terraform command is not installed. Please install Terraform v1.3.9 or greater. Exiting."
-    exit -1
+    show_msg "Error: Terraform command is not installed. Please install Terraform v1.3.9 or greater. "
+    exit_script
   fi
 
   # Check if AWS credentials are configured
   if [ ! -f ~/.aws/credentials ]; then
-    show_msg "Error: AWS credentials file not found at \"~/.aws/credentials\".  Please configure AWS credentials. Exiting."
-    exit -1
+    show_msg "Error: AWS credentials file not found at \"~/.aws/credentials\".  Please configure AWS credentials. "
+    exit_script
   fi
 
   # Check if required commands are available
@@ -51,8 +57,7 @@
     fi
   done
   if [ "$exit_script" == "true" ]; then
-    show_msg "Exiting."
-    exit -1
+    exit_script
   fi
 
   # Make sure current dir is the github repo dir
@@ -60,14 +65,14 @@
   if [[ "$original_dir" == *"alluxio-hybrid-cloud-demo" ]]; then
     show_msg "Running script in correct directory \"alluxio-hybrid-cloud-demo\"."
   else
-    show_msg "Error: Current directory is not the correct directory. Must be \"alluxio-hybrid-cloud-demo\". Exiting."
-    exit -1
+    show_msg "Error: Current directory is not the correct directory. Must be \"alluxio-hybrid-cloud-demo\". "
+    exit_script
   fi
 
   # Make sure that the terraform directory is in this current directory
   if [ ! -d ./terraform ]; then
-    show_msg "Error: The \"terraform\" sub-directory is not in this current directory. Exiting."
-    exit -1
+    show_msg "Error: The \"terraform\" sub-directory is not in this current directory. "
+    exit_script
   fi
 
   # Create an SSH key, if one doesn't already exist
@@ -78,8 +83,8 @@
     show_msg "Creating public and private SSH key in \"~/.ssh/id_rsa\" and \"~/.ssh/id_rsa.pub\". "
     ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa <<< y &>/dev/null
     if [ "$?" != 0 ]; then
-      show_msg "Error: Creating public and private SSH key in \"~/.ssh/id_rsa\" and \"~/.ssh/id_rsa.pub\" failed. Exiting. "
-      exit -1
+      show_msg "Error: Creating public and private SSH key in \"~/.ssh/id_rsa\" and \"~/.ssh/id_rsa.pub\" failed.  "
+      exit_script
     fi
   else
     show_msg "Public and private SSH keys already exist in \"~/.ssh/id_rsa\" and \"~/.ssh/id_rsa.pub\". Skipping. "
@@ -108,15 +113,19 @@
   show_msg "Running command: \"terraform init\". See terraform/terraform-init.out for results."
   terraform init > terraform-init.out 2>&1
   if [ "$?" != 0 ]; then
-    show_msg "Error: Command \"terraform init\" failed to run successfully. Exiting."
-    exit -1
+    show_msg "Error: Command \"terraform init\" failed to run successfully."
+    show_msg "       Showing tail end of terraform/terraform-init.out:"
+    tail -n 10 terraform-init.out
+    exit_script
   fi
 
   show_msg "Running command: \"terraform apply\". See terraform/terraform-apply.out for results."
   terraform apply -auto-approve > terraform-apply.out 2>&1
   if [ "$?" != 0 ]; then
-    show_msg "Error: Command \"terraform apply\" failed to run successfully. Exiting."
-    exit -1
+    show_msg "Error: Command \"terraform apply\" failed to run successfully."
+    show_msg "       Showing tail end of terraform/terraform-apply.out:"
+    tail -n 10 terraform-apply.out
+    exit_script
   fi
   show_msg "Command \"terraform apply\" completed."
 
@@ -124,8 +133,10 @@
   #
   grep 'Apply complete!' terraform-apply.out &> /dev/null
   if [ "$?" != 0 ]; then
-    show_msg "Error: Command \"terraform apply\" failed to run successfully. Exiting."
-    exit -1
+    show_msg "Error: Command \"terraform apply\" failed to run successfully."
+    show_msg "       Showing tail end of terraform/terraform-apply.out:"
+    tail -n 10 terraform-apply.out
+    exit_script
   fi
 
   cloud_ip_address_line=$(grep 'ssh_to_CLOUD_master_node = "ssh ' terraform-apply.out)
@@ -144,8 +155,7 @@
     show_msg "       ssh -o StrictHostKeyChecking=no hadoop@${onprem_ip_address}"
     echo
     show_msg "Fix the issue or destroy the demo cluster with the command \"terraform destroy\". "
-    show_msg "Exiting."
-    exit -1
+    exit_script
   fi
 
   response=$(ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} "echo sshtrue" &>/tmp/ssh-response.out)
@@ -157,8 +167,7 @@
     show_msg "       ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address}"
     echo
     show_msg "Fix the issue or destroy the demo cluster with the command \"terraform destroy\". "
-    show_msg "Exiting."
-    exit -1
+    exit_script
   fi
 
   show_msg "The demo EMR master node IP addresses are:"
@@ -200,8 +209,7 @@
   else
     show_msg "Error: Hive table \"store_sales\" or \"item\" was not created successfully."
     show_msg "Fix the issue or destroy the demo cluster with the command \"terraform destroy\". "
-    show_msg "Exiting."
-    exit -1
+    exit_script
   fi
 
   show_msg "The following URLs will be launched in your web browser."

@@ -47,8 +47,8 @@ resource "aws_s3_bucket" "shared_s3_bucket" {
 
 // on-prem HDFS mock cluster resources
 locals {
-  on_prem_master_instance_type = "r4.4xlarge"
-  on_prem_worker_instance_type = "r4.4xlarge"
+  on_prem_master_instance_type = var.on_prem_master_instance_type
+  on_prem_worker_instance_type = var.on_prem_worker_instance_type
   on_prem_instance_types       = [local.on_prem_master_instance_type, local.on_prem_worker_instance_type]
   on_prem_conf_s3_uri          = "s3://${aws_s3_bucket.shared_s3_bucket.bucket}/onpremConf/"
   on_prem_bootstrap_action = {
@@ -144,8 +144,8 @@ module "emr_on_prem" {
 
 // compute cluster resources
 locals {
-  compute_master_instance_type = "r4.4xlarge"
-  compute_worker_instance_type = "r5d.4xlarge"
+  compute_master_instance_type = var.compute_master_instance_type
+  compute_worker_instance_type = var.compute_worker_instance_type
   compute_instance_types       = [local.compute_master_instance_type, local.compute_worker_instance_type]
 }
 

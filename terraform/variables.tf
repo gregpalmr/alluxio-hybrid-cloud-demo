@@ -60,6 +60,30 @@ variable "on_prem_region" {
   default     = "us-west-1"
 }
 
+variable "on_prem_master_instance_type" {
+  description = "ON-PREM STORAGE cluster master node instance_type"
+  type        = string
+  default     = "r4.4xlarge"
+}
+
+variable "on_prem_worker_instance_type" {
+  description = "ON-PREM STORAGE cluster worker node instance_type"
+  type        = string
+  default     = "r4.4xlarge"
+}
+
+variable "compute_master_instance_type" {
+  description = "CLOUD COMPUTE cluster master node instance_type"
+  type        = string
+  default     = "r4.4xlarge"
+}
+
+variable "compute_worker_instance_type" {
+  description = "CLOUD COMPUTE cluster worker node instance_type"
+  type        = string
+  default     = "r5d.4xlarge"
+}
+
 variable "local_ip_as_cidr" {
   description = <<DESC
 Your local IP address as a CIDR block to set as an ingress rule for Alluxio Web UI port.
