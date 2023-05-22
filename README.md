@@ -123,7 +123,7 @@ $ scripts/launch-demo.sh
  05/18/23 14:20:27 -      Presto  UI:       http://ec2-54-209-145-148.compute-1.amazonaws.com:8889
  05/18/23 14:20:27 -      Prometheus UI:    http://ec2-54-209-145-148.compute-1.amazonaws.com:9090
  05/18/23 14:20:27 -      Grafana UI:       http://ec2-54-209-145-148.compute-1.amazonaws.com:3000 - Use admin/admin
- 05/18/23 14:20:27 -      Spark History UI: http://ec2-54-209-145-148.compute-1.amazonaws.com:8020
+ 05/18/23 14:20:27 -      Spark History UI: http://ec2-54-209-145-148.compute-1.amazonaws.com:18080
  05/18/23 14:20:27 -      Yarn RM UI:       http://ec2-54-209-145-148.compute-1.amazonaws.com:8088
  05/18/23 14:20:28 - Running the TPC-DS Q44 Presto query in the CLOUD Presto/Alluxio cluster.
  05/18/23 14:20:28 - This first run will be slow because the Alluxio cache is not warmed up yet.
