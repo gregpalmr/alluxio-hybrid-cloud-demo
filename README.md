@@ -374,7 +374,20 @@ Create the Hive tables that reference the imported tpcds datasets, using the com
 
      hive -f create-hive-tables.sql
 
-## Step 5. Setup the Presto queries
+## Step 5. Create a demo S3 bucket
+
+Part of the demo inlcudes showing multiple heterogeneous data stores being integrated by Alluxio at the same time. Create a demo S3 bucket for this purpose. Use the following command, replacing <my-demo-s3-bucket> with your bucket name, such as "gregs-demo-s3-bucket":
+
+     aws s3api create-bucket \
+          --acl private \
+          --region us-east-1 \
+          --bucket <my-demo-s3-bucket>
+
+Once the bucket is created, copy some test data into the bucket. For this demo, copy the public NYC taxi ride data set using the command.
+
+     s3-dist-cp --src s3a://nyc-tlc/trip\ data/ --dest s3a://<my-demo-s3-bucket>/nyc_taxi/
+
+## Step 6. Setup the Presto queries
 
 In the "CLOUD - COMPUTE" ssh terminal tab, open a shell session on the master node in the cloud demo environment. Copy the SSH command found on the "Outputs" section displayed at the end of the "terraform apply" command. Use the "ssh_to_CLOUD_master_node" command and run it in this terminal tab, like this:
 
@@ -388,15 +401,15 @@ Run the first iteration of the TPC/DS Q44 SQL query. This Presto query will run 
 
      presto-cli --catalog onprem --schema default < tpcds-query-44.sql
 
-## Step 6. Mount other Alluxio UFSs
+## Step 7. Mount other Alluxio UFSs
 
 This Alluxio demo illustrates the use of Alluxio's unified namespace capability, so we will mount other under stores to use within the unified namespace. Alluxio is already configured with a "root" under store that points to the "on-prem" Hadoop environment. So we will mount an S3 under store and a union mount with both S3 and HDFS under stores combined in a single mount point.  
 
-Mount the NYC taxi ride public data set as an S3 bucket using the command:
+Mount the demo S3 bucket that you created above with the "create-bucket" command. Use the command:
 
      /opt/alluxio/bin/alluxio fs mount \
           /alluxio_s3_mount/ \
-          s3://nyc-tlc/trip\ data/
+          s3://<my-demo-s3-bucket-name/
 
 Mount the "on-prem" HDFS storage environment as an under store. To get the URL to the "on-prem" HDFS Namenode, look at the Alluxio properties file and see how it was used as the root "/" ufs. Use this command:
 
@@ -421,7 +434,7 @@ Finally, create a UNION mount in Alluxio that includes both the S3 and the HDFS 
 	--option alluxio-union.collection.create=hdfs_mount \
 	/alluxio_union_mount union://union_mount_ufs/
 
-## Step 7. Display the Alluxio and Presto Web UIs
+## Step 8. Display the Alluxio and Presto Web UIs
 
 Point your web browser to the "cloud compute" cluster's master node and display the Alluxio web UI:
 
@@ -431,13 +444,13 @@ Point your web browser to the "cloud compute" cluster's master node and display 
 
      http://ec2-18-212-208-181.compute-1.amazonaws.com:8889
 
-## Step 8. Display the Grafana monitoring Web UI
+## Step 9. Display the Grafana monitoring Web UI
 
 Point your web browser to the "cloud compute" cluster's master node and display the Grafana web UI:
 
      http://ec2-18-212-208-181.compute-1.amazonaws.com:3000
 
-## Step 9. Re-run the Presto TPD-DS Q44 Query
+## Step 10. Re-run the Presto TPD-DS Q44 Query
 
 Run the Presto query again, so we can compare the cold cache vs warm cache performance. Use this command on the "CLOUD COMPUTE" shell session:
 

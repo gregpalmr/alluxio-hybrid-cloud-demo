@@ -12,6 +12,11 @@
   function exit_script {
     show_msg "Exiting."
     cd ..
+    show_msg ""
+    show_msg "To destroy the cluster, and run the command:"
+    show_msg ""
+    show_msg "    cd terraform && terraform destroy -auto-approve "
+    show_msg ""
     exit -1
   }
 
@@ -217,7 +222,7 @@
   show_msg "     Alluxio UI:       http://${cloud_ip_address}:19999"
   show_msg "     Presto  UI:       http://${cloud_ip_address}:8889"
   show_msg "     Grafana UI:       http://${cloud_ip_address}:3000 - Use admin/admin"
-  show_msg "     Zeppelin UI:      http://${cloud_ip_address}:8890"
+  #show_msg "     Zeppelin UI:      http://${cloud_ip_address}:8890"
   show_msg "     Spark History UI: http://${cloud_ip_address}:18080"
   show_msg "     Yarn RM UI:       http://${cloud_ip_address}:8088"
 
@@ -225,7 +230,7 @@
     open http://${cloud_ip_address}:19999
     open http://${cloud_ip_address}:8889
     open http://${cloud_ip_address}:3000
-    open http://${cloud_ip_address}:8890
+    #open http://${cloud_ip_address}:8890
     open http://${cloud_ip_address}:18080
     open http://${cloud_ip_address}:8088
   fi
@@ -240,9 +245,31 @@
   cmd="presto-cli --catalog onprem --schema default < tpcds-query-44.sql"
   ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} ${cmd} &>/dev/null
 
+  # Create an S3 bucket to use with the demo S3 mount
+  this_user=$(echo $USER)
+  if [ "$this_user" != "" ]; then
+    s3_demo_bucket=${this_user}-alluxio-demo-bucket
+  else
+    s3_demo_bucket=unknown_user-alluxio-demo-bucket
+  fi
+  response1=$(aws s3api create-bucket --acl private --region us-east-1 --bucket "${s3_demo_bucket}")
+
+  # Check to make sure the bucket was created
+  response2=$(aws s3 ls / | grep "${s3_demo_bucket}" )
+  if [ "$response2" -eq "" ]; then
+    show_msg "Error: Unable to create the demo S3 bucket: ${s3_demo_bucket}."
+    show_msg "       Message: $response1"
+    exit_script
+  fi
+
   # Mount the S3 bucket in Alluxio in the CLOUD cluster
   ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} ${cmd} &>/dev/null
-  cmd="alluxio fs mount /alluxio_s3_mount s3://nyc-tlc"
+  cmd="alluxio fs mount /alluxio_s3_mount s3://${s3_demo_bucket}"
+  ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} ${cmd} &>/dev/null
+
+  # Load NYC taxi ride data into demo S3 bucket
+  show_msg "Loading NYC taxi ride data set into demo S3 bucket"
+  cmd="s3-dist-cp --src s3a://nyc-tlc/trip\ data/ --dest s3a://${s3_demo_bucket}/nyc_taxi/ "
   ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} ${cmd} &>/dev/null
 
   # Mount the on-prem HDFS mount in Alluxio in the CLOUD cluster
@@ -254,7 +281,7 @@
 			  --option alluxio-union.hdfs_mount.uri=hdfs://${onprem_ip_address}:8020/data \
 			  --option alluxio-union.hdfs_mount.option.alluxio.underfs.version=hadoop-2.8 \
 			  \
-			  --option alluxio-union.s3_mount.uri=s3://nyc-tlc \
+			  --option alluxio-union.s3_mount.uri=s3://${s3_demo_bucket} \
                         \
 			  --option alluxio-union.priority.read=hdfs_mount,s3_mount \
 			  --option alluxio-union.collection.create=hdfs_mount \
@@ -273,10 +300,6 @@
   #show_msg "The demo cluster will remain up for ${TERMINATE_DEMO_HOURS} hours."
   #echo
   #show_msg "To destroy the cluster manually, press Ctrl-C to exit this script"
-  show_msg "To destroy the cluster, and run the command:"
-  show_msg ""
-  show_msg "    cd terraform && terraform destroy -auto-approve "
-  show_msg ""
 
   # Wait for 2 hours and then destroy the cluster
   #num_seconds=$((${TERMINATE_DEMO_HOURS}*60))
@@ -293,5 +316,12 @@
   cd ${original_dir}
 
   show_msg "launch-demo.sh script completed"
+  show_msg ""
+  show_msg "DON'T FORGET TO DESTROY YOUR CLUSTERS WHEN DONE!"
+  show_msg ""
+  show_msg "To destroy the cluster, and run the command:"
+  show_msg ""
+  show_msg "    cd terraform && terraform destroy -auto-approve "
+  show_msg ""
 
 # end of script
