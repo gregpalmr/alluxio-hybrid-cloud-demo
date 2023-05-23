@@ -93,7 +93,7 @@ locals {
 
 // resolve with variable values before setting in emr module
 locals {
-  finalized_applications = length(var.applications) == 0 ? ["Hadoop", "Hive", "Presto", "Spark"] : var.applications
+  finalized_applications = length(var.applications) == 0 ? ["Hadoop", "Hive", "Presto", "Spark", "Zeppelin"] : var.applications
   // note the trailing '/' at the end of the log uri is to avoid unnecessarily recreating the emr cluster
   // see https://github.com/terraform-providers/terraform-provider-aws/pull/1374
   finalized_log_uri = var.log_uri == "" ? "s3://${var.alluxio_working_bucket}/${local.working_path}/log/" : var.log_uri

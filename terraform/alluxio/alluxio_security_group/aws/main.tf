@@ -67,7 +67,7 @@ resource "aws_security_group" "alluxio" {
   dynamic "ingress" {
     for_each = length(var.alluxio_web_ui_rule_cidr_blocks) > 0 ? [""] : []
     content {
-      description = "Prometheus Web UI default port"
+      description = "Prometheus Web UI"
       from_port   = 9090 
       to_port     = 9090 
       protocol    = "TCP"
@@ -78,7 +78,7 @@ resource "aws_security_group" "alluxio" {
   dynamic "ingress" {
     for_each = length(var.alluxio_web_ui_rule_cidr_blocks) > 0 ? [""] : []
     content {
-      description = "Grafana Web UI default port"
+      description = "Grafana Web UI"
       from_port   = 3000 
       to_port     = 3000 
       protocol    = "TCP"
@@ -89,7 +89,7 @@ resource "aws_security_group" "alluxio" {
   dynamic "ingress" {
     for_each = length(var.alluxio_web_ui_rule_cidr_blocks) > 0 ? [""] : []
     content {
-      description = "Presto web UI default port"
+      description = "Presto web UI"
       from_port   = 8889
       to_port     = 8889
       protocol    = "TCP"
@@ -100,9 +100,20 @@ resource "aws_security_group" "alluxio" {
   dynamic "ingress" {
     for_each = length(var.alluxio_web_ui_rule_cidr_blocks) > 0 ? [""] : []
     content {
-      description = "Spark History Server web UI default port"
+      description = "Spark History Server web UI"
       from_port   = 18080
       to_port     = 18080
+      protocol    = "TCP"
+      cidr_blocks = var.alluxio_web_ui_rule_cidr_blocks
+    }
+  }
+
+  dynamic "ingress" {
+    for_each = length(var.alluxio_web_ui_rule_cidr_blocks) > 0 ? [""] : []
+    content {
+      description = "Zeppelin notebook web UI"
+      from_port   = 8890
+      to_port     = 8890
       protocol    = "TCP"
       cidr_blocks = var.alluxio_web_ui_rule_cidr_blocks
     }

@@ -468,8 +468,8 @@ TODO:
 
 - Get prometheus scrape rule to include Alluxio worker nodes
 - Save the presto query output to a file
+- Added EMR auto terminate policy for default 2 hours (auto_termination_policy = 432000)
 - Use embedded mount points instead of UNION mount for unified namespace example
-- Add Zeppelin or JupiterLab notebook for running Spark workloads
 
 ---
 
