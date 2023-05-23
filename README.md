@@ -145,7 +145,13 @@ To finalize the demo environment setup, use the provided SSH commands to SSH int
 
 # Demo Presentation Instructions
 
-## Step 1. Show the Alluxio Unified Namespace features
+## Step 1. Review Alluxio hybrid-cloud presentation
+
+For the people in the meeting that may have missed previous sessions with Alluxio, briefly cover the problem statement and the Alluxio value proposition. Use these slides:
+
+[Alluxio-Hybrid-Cloud-Presentation.pdf](./images/Alluxio-Hybrid-Cloud-Presentation.pdf)
+
+## Step 2. Show the Alluxio Unified Namespace features
 
 In the Alluxio Web UI, click on the "Browse" tab at the top of the page. 
 
@@ -161,7 +167,7 @@ Then show the "alluxio_union_mount" directory and show how data sets from hetero
 
 Finally, discuss how this, combined with Alluxio's multiple application APIs (Java, HDFS, S3, POSIX file system) can make a very flexible data layer for many client types working with many storage environments through Alluxio.
 
-## Step 2. Show how Alluxio improves performance of Presto queries
+## Step 3. Show how Alluxio improves performance of Presto queries
 
 During the demo setup procedure above, The TPC-DS Q44 Presto query was run against Alluxio three times. 
 
@@ -197,11 +203,11 @@ Also talk about how Alluxio supports pinning data so that it remains in the cach
 
 Finally, talk about how Alluxio supports time-to-live (TTL) attributes that can cause data to be cached for a certain amount of time (1 day for instance), and then the data can be automatically purged from the cached, and even deleted from the under store as well.
 
-## Step 3. Show how Alluxio improves performance of Spark jobs too 
+## Step 4. Show how Alluxio improves performance of Spark jobs too 
 
 TBD
 
-## Step 4. Show how Alluxio caches metadata as well
+## Step 5. Show how Alluxio caches metadata as well
 
 Talk about how Alluxio cached metadata and can update metadata on a schedule (every 5 minutes by default) or in an on-demand fashion.
 
@@ -236,7 +242,7 @@ Finally, re-run the Presto query to show the updated data. In the "ON-PREM STORA
 
      presto-cli --catalog onprem --schema default --execute "select * from students;"
 
-## Step 5. Discuss Alluxio's policy driven data management (PDDM) capabilities
+## Step 6. Discuss Alluxio's policy driven data management (PDDM) capabilities
 
 TBD
 
@@ -267,7 +273,7 @@ On the CLOUD COMPUTE environment, cause Alluxio to do a metadata sync, by runnin
 
      alluxio fs loadMetadata -R /tmp
 
-## Step 6. Show how Alluxio manages the PDDM policies
+## Step 7. Show how Alluxio manages the PDDM policies
 
 See what the initial delay is for new policies (defaults to 5m), 
 
