@@ -237,6 +237,8 @@ spark.sql( "SELECT count(*) FROM storeSalesAlluxioView").show()
 
 Run the the pyspark paragraph and show how it only took about 35 seconds to run the job and how it would have taken 1 minute and 30 seconds to run it if Alluxio didn't already have the data in cache. To reinforce that concept, bring up the Grafana dashboard and show that the Alluxio "Bytes Read Per Minute" metric spiked when the pyspark job was run, but then show how the "Bytes Read UFS (per minute)" metric shows that Alluxio did not have to read any data from the under store, but it was already cached.
 
+![Alt text](/images/alluxio-hybrid-cloud-demo-spark-job-metrics.png?raw=true "Alluxio Reduced UFS reads for Spark job")
+
 ## Step 5. Show how Alluxio caches metadata as well
 
 Talk about how Alluxio cached metadata and can update metadata on a schedule (every 5 minutes by default) or in an on-demand fashion.
