@@ -205,7 +205,37 @@ Finally, talk about how Alluxio supports time-to-live (TTL) attributes that can 
 
 ## Step 4. Show how Alluxio improves performance of Spark jobs too 
 
-TBD
+Talk about how, unlike product specific cache technologies, Alluxio deploys a shared cache across all kinds of client workloads. Discuss how data has been cached by the Presto jobs can be used by Spark jobs too.
+
+Bring up the Zeppelin notebook environment and create a new Spark notebook. In that notebook, copy the following pyspark source code into a new paragraph:
+
+```
+%pyspark
+
+from pyspark import SparkConf
+from pyspark.sql import SQLContext
+
+sc.setLogLevel("Error")
+
+sc._jsc.hadoopConfiguration().set("fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
+sc._jsc.hadoopConfiguration().set("fs.s3a.endpoint", "http://localhost:39999/api/v1/s3")
+sc._jsc.hadoopConfiguration().set("fs.s3a.access.key", "hadoop")
+sc._jsc.hadoopConfiguration().set("fs.s3a.secret.key", "hadoop")
+sc._jsc.hadoopConfiguration().set("fs.s3a.path.style.access", "true")
+sc._jsc.hadoopConfiguration().set("fs.s3a.connection.ssl.enabled","false")
+sc._jsc.hadoopConfiguration().set("fs.s3a.change.detection.version.required","false")
+
+sqlContext = SQLContext(sc)
+
+# TPCDS data, compute in cloud - reading remove on-prem HDFS via Alluxio
+storeSalesAlluxio = spark.read.parquet("s3a://data/tpcds/store_sales/")
+
+storeSalesAlluxio = storeSalesAlluxio.createOrReplaceTempView("storeSalesAlluxioView")
+
+spark.sql( "SELECT count(*) FROM storeSalesAlluxioView").show()
+```
+
+Run the the pyspark paragraph and show how it only took about 35 seconds to run the job and how it would have taken 1 minute and 30 seconds to run it if Alluxio didn't already have the data in cache. To reinforce that concept, bring up the Grafana dashboard and show that the Alluxio "Bytes Read Per Minute" metric spiked when the pyspark job was run, but then show how the "Bytes Read UFS (per minute)" metric shows that Alluxio did not have to read any data from the under store, but it was already cached.
 
 ## Step 5. Show how Alluxio caches metadata as well
 
