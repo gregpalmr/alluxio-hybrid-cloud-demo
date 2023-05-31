@@ -15,7 +15,7 @@
     show_msg ""
     show_msg "To destroy the cluster, and run the command:"
     show_msg ""
-    show_msg "    cd terraform && terraform destroy -auto-approve "
+    show_msg "    cd terraform; terraform destroy -auto-approve; cd .."
     show_msg ""
     exit -1
   }
@@ -255,8 +255,8 @@
   response1=$(aws s3api create-bucket --acl private --region us-east-1 --bucket "${s3_demo_bucket}")
 
   # Check to make sure the bucket was created
-  response2=$(aws s3 ls / | grep "${s3_demo_bucket}" )
-  if [ "$response2" -eq "" ]; then
+  aws s3 ls / | grep "${s3_demo_bucket}" &>/dev/null
+  if [ "$?" -eq "1" ]; then
     show_msg "Error: Unable to create the demo S3 bucket: ${s3_demo_bucket}."
     show_msg "       Message: $response1"
     exit_script
@@ -290,10 +290,10 @@
 
   # Run the TPC-DS Q44 presto query two more times - to get the Alluxio cache hit rate above 50%
   show_msg "Running the TPC-DS Q44 Presto query two more times, in the CLOUD Presto/Alluxio cluster."
-  sleep 30
+  sleep 20
   cmd="presto-cli --catalog onprem --schema default < tpcds-query-44.sql"
   ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} ${cmd} &>/dev/null
-  sleep 70
+  sleep 50
   ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} ${cmd} &>/dev/null
 
   show_msg ""
@@ -321,7 +321,7 @@
   show_msg ""
   show_msg "To destroy the cluster, and run the command:"
   show_msg ""
-  show_msg "    cd terraform && terraform destroy -auto-approve "
+  show_msg "    cd terraform; terraform destroy -auto-approve; cd .. "
   show_msg ""
 
 # end of script
