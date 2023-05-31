@@ -205,7 +205,7 @@ Finally, talk about how Alluxio supports time-to-live (TTL) attributes that can 
 
 ## Step 4. Show how Alluxio improves performance of Spark jobs too 
 
-Talk about how, unlike product specific cache technologies, Alluxio deploys a shared cache across all kinds of client workloads. Discuss how data has been cached by the Presto jobs can be used by Spark jobs too.
+Talk about how, unlike product specific cache technologies, Alluxio deploys a shared cache across all kinds of client workloads. Discuss how the data that has been cached by the Presto jobs can be used by Spark jobs too.
 
 Bring up the Zeppelin notebook environment and create a new Spark notebook. In that notebook, copy the following pyspark source code into a new paragraph:
 
@@ -235,7 +235,7 @@ storeSalesAlluxio = storeSalesAlluxio.createOrReplaceTempView("storeSalesAlluxio
 spark.sql( "SELECT count(*) FROM storeSalesAlluxioView").show()
 ```
 
-Run the the pyspark paragraph and show how it only took about 35 seconds to run the job and how it would have taken 1 minute and 30 seconds to run it if Alluxio didn't already have the data in cache. To reinforce that concept, bring up the Grafana dashboard and show that the Alluxio "Bytes Read Per Minute" metric spiked when the pyspark job was run, but then show how the "Bytes Read UFS (per minute)" metric shows that Alluxio did not have to read any data from the under store, but it was already cached.
+Run the the pyspark paragraph and show how it only took about 35 seconds to run the job and how it would have taken 1 minute and 30 seconds to run it if Alluxio didn't already have the data in cache. To reinforce that concept, bring up the Grafana dashboard and show that the Alluxio "Bytes Read Per Minute" metric spiked when the pyspark job was run, but then show how the "Bytes Read UFS (per minute)" metric shows that Alluxio did not have to read any data from the under store, but it was already cached. Emphasize how Alluxio in reducing or eliminating reads to the under store can potentially reduce cloud storage egress costs and API costs if the remote stores are in the cloud, or a different cloud region.
 
 ![Alt text](/images/alluxio-hybrid-cloud-demo-spark-job-metrics.png?raw=true "Alluxio Reduced UFS reads for Spark job")
 
