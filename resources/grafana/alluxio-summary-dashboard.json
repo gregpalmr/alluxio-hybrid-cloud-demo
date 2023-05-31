@@ -308,7 +308,7 @@
       ],
       "thresholds": [],
       "timeRegions": [],
-      "title": "Bytes Read Remote (Per Minute)",
+      "title": "Bytes Read (Per Minute)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -396,7 +396,7 @@
       ],
       "thresholds": [],
       "timeRegions": [],
-      "title": "Bytes Read Remote",
+      "title": "Bytes Read",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -448,190 +448,6 @@
         "w": 11,
         "x": 0,
         "y": 16
-      },
-      "hiddenSeries": false,
-      "id": 112,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "9.5.2",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "datasource": {
-            "uid": "$alluxio_datasource"
-          },
-          "editorMode": "code",
-          "exemplar": true,
-          "expr": "increase(Cluster_BytesWrittenRemote{job=\"alluxio_masters\"}[1m])",
-          "interval": "",
-          "legendFormat": "Bytes Written Remote (Per Minute)",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "Bytes Written Remote (Per Minute)",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:5655",
-          "format": "bytes",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:5656",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "$alluxio_datasource"
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 11,
-        "y": 16
-      },
-      "hiddenSeries": false,
-      "id": 113,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "9.5.2",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "datasource": {
-            "uid": "$alluxio_datasource"
-          },
-          "editorMode": "code",
-          "exemplar": true,
-          "expr": "Cluster_BytesWrittenRemote{job=\"alluxio_masters\"}",
-          "interval": "",
-          "legendFormat": "",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "Bytes Written Remote",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:332",
-          "format": "bytes",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:333",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "$alluxio_datasource"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "links": []
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 11,
-        "x": 0,
-        "y": 24
       },
       "hiddenSeries": false,
       "id": 6,
@@ -705,6 +521,70 @@
       }
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${alluxio_datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 11,
+        "y": 16
+      },
+      "id": 105,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${alluxio_datasource}"
+          },
+          "editorMode": "code",
+          "expr": "Cluster_Workers{job=\"alluxio_masters\"}",
+          "interval": "",
+          "legendFormat": "",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Live Workers",
+      "type": "stat"
+    },
+    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -713,7 +593,6 @@
         "type": "prometheus",
         "uid": "$alluxio_datasource"
       },
-      "description": "",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -724,13 +603,12 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 11,
+        "w": 11,
+        "x": 0,
         "y": 24
       },
       "hiddenSeries": false,
-      "id": 115,
-      "interval": "",
+      "id": 112,
       "legend": {
         "avg": false,
         "current": false,
@@ -742,7 +620,6 @@
       },
       "lines": true,
       "linewidth": 1,
-      "links": [],
       "nullPointMode": "null",
       "options": {
         "alertThreshold": true
@@ -763,16 +640,16 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "Cluster_CapacityUsed{job=\"alluxio_masters\"}",
-          "instant": false,
+          "expr": "increase(Cluster_BytesWrittenRemote{job=\"alluxio_masters\"}[1m])",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "Bytes Written Remote (Per Minute)",
+          "range": true,
           "refId": "A"
         }
       ],
       "thresholds": [],
       "timeRegions": [],
-      "title": "Alluxio Cache Space Used",
+      "title": "Bytes Written (Per Minute)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -786,13 +663,102 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:13972",
+          "$$hashKey": "object:5655",
           "format": "bytes",
           "logBase": 1,
           "show": true
         },
         {
-          "$$hashKey": "object:13973",
+          "$$hashKey": "object:5656",
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "$alluxio_datasource"
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 11,
+        "y": 24
+      },
+      "hiddenSeries": false,
+      "id": 113,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "9.5.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": {
+            "uid": "$alluxio_datasource"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "Cluster_BytesWrittenRemote{job=\"alluxio_masters\"}",
+          "interval": "",
+          "legendFormat": "",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "Bytes Written",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:332",
+          "format": "bytes",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:333",
           "format": "short",
           "logBase": 1,
           "show": true
@@ -902,68 +868,102 @@
       }
     },
     {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
       "datasource": {
         "type": "prometheus",
-        "uid": "${alluxio_datasource}"
+        "uid": "$alluxio_datasource"
       },
+      "description": "",
       "fieldConfig": {
         "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
+          "links": []
         },
         "overrides": []
       },
+      "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 7,
         "w": 12,
         "x": 11,
         "y": 32
       },
-      "id": 105,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "text": {},
-        "textMode": "auto"
+      "hiddenSeries": false,
+      "id": 115,
+      "interval": "",
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
       },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
       "pluginVersion": "9.5.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${alluxio_datasource}"
+            "uid": "$alluxio_datasource"
           },
           "editorMode": "code",
-          "expr": "Cluster_Workers{job=\"alluxio_masters\"}",
+          "exemplar": true,
+          "expr": "Cluster_CapacityUsed{job=\"alluxio_masters\"}",
+          "instant": false,
           "interval": "",
           "legendFormat": "",
-          "range": true,
           "refId": "A"
         }
       ],
-      "title": "Live Workers",
-      "type": "stat"
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "Alluxio Cache Space Used",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:13972",
+          "format": "bytes",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:13973",
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
     },
     {
       "aliasColors": {},
@@ -2760,7 +2760,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2851,7 +2851,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2942,7 +2942,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -3033,7 +3033,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -3124,7 +3124,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -3215,7 +3215,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -3324,7 +3324,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -3436,7 +3436,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -3539,7 +3539,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.2.0",
+      "pluginVersion": "9.5.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -3652,7 +3652,7 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -3670,7 +3670,7 @@
     ]
   },
   "timezone": "",
-  "title": "Alluxio Summary View Dashboard",
+  "title": "Alluxio Demo Summary View Dashboard",
   "uid": "oJnC7i4Mk",
   "version": 1,
   "weekStart": ""
