@@ -5,18 +5,32 @@
 # DESCR:  Launch the Alluxio hybrid cloud demo environment in EMR
 #
 
+  # Colors to use with terminal output
+  GREEN=$'\e[0;32m'
+  RED=$'\e[0;31m'
+  NC=$'\e[0m'
+
   function show_msg {
     echo " `date +"%D %T"` - ${1} "
   }
 
+  function show_msg_green {
+    show_msg "${GREEN}${1}${NC}"
+  }
+
+  function show_err {
+    show_msg "${RED}*** ${1}${NC} "
+  }
+
   function exit_script {
-    show_msg "Exiting."
+    show_err
+    show_err "Exiting."
     cd ..
-    show_msg ""
-    show_msg "To destroy the cluster, and run the command:"
-    show_msg ""
-    show_msg "    cd terraform; terraform destroy -auto-approve; cd .."
-    show_msg ""
+    show_err ""
+    show_err "  To destroy the cluster, and run the command:"
+    show_err ""
+    show_err "    cd terraform; terraform destroy -auto-approve; cd .."
+    show_err ""
     exit -1
   }
 
@@ -34,7 +48,7 @@
     CYGWIN*)    this_os=Cygwin;;
     MINGW*)     this_os=MinGw;;
     *)          this_os="UNKNOWN:${unameOut}"
-      show_msg "Error: Running on unknown OS type: \"${this_os}\". Run this script on MacOS or Linux only. "
+      show_err "Error: Running on unknown OS type: \"${this_os}\". Run this script on MacOS or Linux only. "
       exit_script
   esac
   show_msg "Running on ${this_os}"
@@ -42,13 +56,13 @@
   # Check if terraform is installed and correct version
   which terraform &>/dev/null
   if [ "$?" != 0 ]; then
-    show_msg "Error: Terraform command is not installed. Please install Terraform v1.3.9 or greater. "
+    show_err "Error: Terraform command is not installed. Please install Terraform v1.3.9 or greater. "
     exit_script
   fi
 
   # Check if AWS credentials are configured
   if [ ! -f ~/.aws/credentials ]; then
-    show_msg "Error: AWS credentials file not found at \"~/.aws/credentials\".  Please configure AWS credentials. "
+    show_err "Error: AWS credentials file not found at \"~/.aws/credentials\".  Please configure AWS credentials. "
     exit_script
   fi
 
@@ -57,7 +71,7 @@
   for c in $(echo "$required_commands"); do
     which ${c} &>/dev/null
     if [ "$?" != 0 ]; then
-      show_msg "Error: Required \"${c}\" command is not installed. Please install curl command."
+      show_err "Error: Required \"${c}\" command is not installed. Please install curl command."
       exit_script=true
     fi
   done
@@ -70,13 +84,13 @@
   if [[ "$original_dir" == *"alluxio-hybrid-cloud-demo" ]]; then
     show_msg "Running script in correct directory \"alluxio-hybrid-cloud-demo\"."
   else
-    show_msg "Error: Current directory is not the correct directory. Must be \"alluxio-hybrid-cloud-demo\". "
+    show_err "Error: Current directory is not the correct directory. Must be \"alluxio-hybrid-cloud-demo\". "
     exit_script
   fi
 
   # Make sure that the terraform directory is in this current directory
   if [ ! -d ./terraform ]; then
-    show_msg "Error: The \"terraform\" sub-directory is not in this current directory. "
+    show_err "Error: The \"terraform\" sub-directory is not in this current directory. "
     exit_script
   fi
 
@@ -85,32 +99,51 @@
        mkdir -p ~/.ssh
   fi
   if [ ! -f ~/.ssh/id_rsa ] || [ ! -f ~/.ssh/id_rsa.pub ];then
-    show_msg "Creating public and private SSH key in \"~/.ssh/id_rsa\" and \"~/.ssh/id_rsa.pub\". "
+    show_msg "Creating public and private SSH key in \"~/.ssh/id_rsa\" "
     ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa <<< y &>/dev/null
     if [ "$?" != 0 ]; then
-      show_msg "Error: Creating public and private SSH key in \"~/.ssh/id_rsa\" and \"~/.ssh/id_rsa.pub\" failed.  "
+      show_err "Error: Creating public and private SSH key in \"~/.ssh/id_rsa\" failed.  "
       exit_script
     fi
   else
-    show_msg "Public and private SSH keys already exist in \"~/.ssh/id_rsa\" and \"~/.ssh/id_rsa.pub\". Skipping. "
+    show_msg "Public and private SSH keys already exist in \"~/.ssh/id_rsa\". Skipping. "
   fi
 
   # Set the terraform.tfvars variables
   if [ ! -f terraform/terraform.tfvars ]; then
     touch terraform/terraform.tfvars
   fi
+
+  # Check if we can get this computer's public IP address
   if [ "$this_os" == "MacOS" ]; then
-    # delete old cidr
-    sed -i '' "/local_ip_as_cidr/d" terraform/terraform.tfvars
-    # Add new cidr
-    echo "local_ip_as_cidr = \"$(curl --silent ifconfig.me)/32\"" >> terraform/terraform.tfvars
+    this_public_ip=$(curl --silent ifconfig.me)
   else
-    # delete old cidr
-    sed -i "/local_ip_as_cidr/d" terraform/terraform.tfvars
-    # Add new cidr
-    my_public_ip=$(curl --silent api.ipify.org)
-    echo "local_ip_as_cidr = \"${my_public_ip}/32\"" >> terraform/terraform.tfvars
+    this_public_ip=$(curl --silent api.ipify.org)
+  fi  
+
+  # If the ip address is not valid, exit with message
+  if [[ ! $this_public_ip =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+    # dont display message if variable is already in the tfvars file
+    response=$(grep local_ip_as_cidr terraform/terraform.tfvars)
+    if [ "$response" != "" ]; then
+      show_msg "Unable to get new public ip address for this computer, using"
+      show_msg "existing setting in terraform/terraform.rfvars file."
+    else
+      show_err "Error: Could not get a valid public IP address for this computer."
+      show_err "Got: $this_public_ip"
+      show_err ""
+      show_err "Please modify the terraform/terraform.rfvars file manually and "
+      show_err "add your computer\'s public IP address like this:"
+      show_err "    local_ip_as_cidr = \"<my public ip address>\""
+      exit_script
+    fi
   fi
+
+  # If the local_ip_as_cidr variable is not already in the file, add it
+  response=$(grep local_ip_as_cidr terraform/terraform.tfvars)
+  if [ "$response" == "" ]; then
+    echo "local_ip_as_cidr = \"$this_public_ip/32\"" >> terraform/terraform.tfvars
+  fi 
 
   # Run the terraform commands
   cd terraform
@@ -118,8 +151,8 @@
   show_msg "Running command: \"terraform init\". See terraform/terraform-init.out for results."
   terraform init > terraform-init.out 2>&1
   if [ "$?" != 0 ]; then
-    show_msg "Error: Command \"terraform init\" failed to run successfully."
-    show_msg "       Showing tail end of terraform/terraform-init.out:"
+    show_err "Error: Command \"terraform init\" failed to run successfully."
+    show_err "       Showing tail end of terraform/terraform-init.out:"
     tail -n 10 terraform-init.out
     exit_script
   fi
@@ -127,8 +160,8 @@
   show_msg "Running command: \"terraform apply\". See terraform/terraform-apply.out for results."
   terraform apply -auto-approve > terraform-apply.out 2>&1
   if [ "$?" != 0 ]; then
-    show_msg "Error: Command \"terraform apply\" failed to run successfully."
-    show_msg "       Showing tail end of terraform/terraform-apply.out:"
+    show_err "Error: Command \"terraform apply\" failed to run successfully."
+    show_err "       Showing tail end of terraform/terraform-apply.out:"
     tail -n 10 terraform-apply.out
     exit_script
   fi
@@ -138,8 +171,8 @@
   #
   grep 'Apply complete!' terraform-apply.out &> /dev/null
   if [ "$?" != 0 ]; then
-    show_msg "Error: Command \"terraform apply\" failed to run successfully."
-    show_msg "       Showing tail end of terraform/terraform-apply.out:"
+    show_err "Error: Command \"terraform apply\" failed to run successfully."
+    show_err "       Showing tail end of terraform/terraform-apply.out:"
     tail -n 10 terraform-apply.out
     exit_script
   fi
@@ -155,32 +188,27 @@
   grep sshtrue /tmp/ssh-response.out &> /dev/null
   if [ "$?" != "0" ]; then
     echo
-    show_msg "Error: Unable to ssh into ONPREM master node with the command:"
-    echo
-    show_msg "       ssh -o StrictHostKeyChecking=no hadoop@${onprem_ip_address}"
-    echo
-    show_msg "Fix the issue or destroy the demo cluster with the command \"terraform destroy\". "
+    show_err "Error: Unable to ssh into ONPREM master node with the command:"
+    show_err "       ssh -o StrictHostKeyChecking=no hadoop@${onprem_ip_address}"
+    show_err "Fix the issue or destroy the demo cluster with the command \"terraform destroy\". "
     exit_script
   fi
 
   response=$(ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} "echo sshtrue" &>/tmp/ssh-response.out)
   grep sshtrue /tmp/ssh-response.out &> /dev/null
   if [ "$?" != "0" ]; then
-    echo
-    show_msg "Error: Unable to ssh into CLOUD master node with the command:"
-    echo
-    show_msg "       ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address}"
-    echo
-    show_msg "Fix the issue or destroy the demo cluster with the command \"terraform destroy\". "
+    show_err "Error: Unable to ssh into CLOUD master node with the command:"
+    show_err "       ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address}"
+    show_err "Fix the issue or destroy the demo cluster with the command \"terraform destroy\". "
     exit_script
   fi
 
   show_msg "The demo EMR master node IP addresses are:"
   show_msg "    ONPREM: ${onprem_ip_address}"
   show_msg "    CLOUD:  ${cloud_ip_address}"
-  show_msg "You can SSH into the master nodes with the following commands:"
-  show_msg "    ONPREM: ssh hadoop@${onprem_ip_address}"
-  show_msg "    CLOUD:  ssh hadoop@${cloud_ip_address}"
+  show_msg_green "You can SSH into the master nodes with the following commands:"
+  show_msg_green "    ONPREM: ssh hadoop@${onprem_ip_address}"
+  show_msg_green "    CLOUD:  ssh hadoop@${cloud_ip_address}"
 
   # Load the TPC-DS data sets into the ONPREM Hadoop cluster
   show_msg "Loading the TPC-DS data sets in the ONPREM Hadoop cluster"
@@ -212,8 +240,8 @@
   if [[ "$found1" == *"store_sales"* ]] && [[ "$found2" == *"item"* ]]; then
     show_msg "Hive tables created successfully"
   else
-    show_msg "Error: Hive table \"store_sales\" or \"item\" was not created successfully."
-    show_msg "Fix the issue or destroy the demo cluster with the command \"terraform destroy\". "
+    show_err "Error: Hive table \"store_sales\" or \"item\" was not created successfully."
+    show_err "Fix the issue or destroy the demo cluster with the command \"terraform destroy\". "
     exit_script
   fi
 
@@ -257,8 +285,8 @@
   # Check to make sure the bucket was created
   aws s3 ls / | grep "${s3_demo_bucket}" &>/dev/null
   if [ "$?" -eq "1" ]; then
-    show_msg "Error: Unable to create the demo S3 bucket: ${s3_demo_bucket}."
-    show_msg "       Message: $response1"
+    show_err "Error: Unable to create the demo S3 bucket: ${s3_demo_bucket}."
+    show_err "       Message: $response1"
     exit_script
   fi
 
@@ -299,7 +327,7 @@
   show_msg ""
   #show_msg "The demo cluster will remain up for ${TERMINATE_DEMO_HOURS} hours."
   #echo
-  #show_msg "To destroy the cluster manually, press Ctrl-C to exit this script"
+  #show_msg "  To destroy the cluster manually, press Ctrl-C to exit this script"
 
   # Wait for 2 hours and then destroy the cluster
   #num_seconds=$((${TERMINATE_DEMO_HOURS}*60))
@@ -315,13 +343,13 @@
 
   cd ${original_dir}
 
-  show_msg "launch-demo.sh script completed"
-  show_msg ""
-  show_msg "DON'T FORGET TO DESTROY YOUR CLUSTERS WHEN DONE!"
-  show_msg ""
-  show_msg "To destroy the cluster, and run the command:"
-  show_msg ""
-  show_msg "    cd terraform; terraform destroy -auto-approve; cd .. "
-  show_msg ""
+  show_msg_green "launch-demo.sh script completed"
+  show_msg_green ""
+  show_msg_green "DON'T FORGET TO DESTROY YOUR CLUSTERS WHEN DONE!"
+  show_msg_green ""
+  show_msg_green "  To destroy the cluster, and run the command:"
+  show_msg_green ""
+  show_msg_green "    cd terraform; terraform destroy -auto-approve; cd .. "
+  show_msg_green ""
 
 # end of script
