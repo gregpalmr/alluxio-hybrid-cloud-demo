@@ -85,7 +85,7 @@ If these commands work, proceed. If not, follow the AWS CLI setup steps show in:
 
 Use the provided launch-demo.sh script to launch the demo environment. Run the command:
 
-     scripts/launch-demo.sh
+     scripts/launch-demo.sh | tee ./launch-demo.out
 
 If you get any "Error" messages during the "terraform apply" command phase, check the output file to view the error messages:
 
