@@ -4,6 +4,8 @@
 #
 # DESCR:  Launch the Alluxio hybrid cloud demo environment in EMR
 #
+# USAGE: bash scripts/launch-demo.sh <this computer's public ip address>
+#
 
   # Colors to use with terminal output
   GREEN=$'\e[0;32m'
@@ -34,9 +36,15 @@
     exit -1
   }
 
-  # Automatically destroy the demo environment after certain 
-  # number of hours - 2 hours default
-  TERMINATE_DEMO_HOURS="2"
+  # Get the user supply public IP address to use with the AWS security group ingres rules
+  if [ "$1" != "" ]; then
+    user_supplied_public_ip_address=$1
+    if [[ ! $user_supplied_public_ip_address =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+      show_err "Error: Argument 1 was supplied as: $user_supplied_public_ip_address."
+      show_err "       It should be a valid 4 part IP address like: 210.46.59.123"
+      exit_script
+    fi
+  fi
 
   show_msg "Running launch-demo.sh script"
 
@@ -114,36 +122,36 @@
     touch terraform/terraform.tfvars
   fi
 
-  # Check if we can get this computer's public IP address
-  if [ "$this_os" == "MacOS" ]; then
-    this_public_ip=$(curl --silent ifconfig.me)
-  else
-    this_public_ip=$(curl --silent api.ipify.org)
-  fi  
 
-  # If the ip address is not valid, exit with message
-  if [[ ! $this_public_ip =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-    # dont display message if variable is already in the tfvars file
-    response=$(grep local_ip_as_cidr terraform/terraform.tfvars)
-    if [ "$response" != "" ]; then
-      show_msg "Unable to get new public ip address for this computer, using"
-      show_msg "existing setting in terraform/terraform.rfvars file."
+  # If the user supplied an argument to this script with the public ip address, use it.
+  if [ "$user_supplied_public_ip_address" != "" ]; then
+    this_public_ip=$user_supplied_public_ip_address
+  else
+    # Check if we can get this computer's public IP address
+    if [ "$this_os" == "MacOS" ]; then
+      this_public_ip=$(curl --silent ifconfig.me)
     else
-      show_err "Error: Could not get a valid public IP address for this computer."
-      show_err "Got: $this_public_ip"
-      show_err ""
-      show_err "Please modify the terraform/terraform.rfvars file manually and "
-      show_err "add your computer\'s public IP address like this:"
-      show_err "    local_ip_as_cidr = \"<my public ip address>\""
-      exit_script
+      this_public_ip=$(curl --silent api.ipify.org)
+    fi
+    # If the ip address is not valid, exit with message
+    if [[ ! $this_public_ip =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+        show_err "Error: Could not get a valid public IP address for this computer."
+        show_err "Got: $this_public_ip"
+        show_err ""
+        show_err "Please supply your PUBLIC IP address as an argument to this script and try again."
+        exit_script
     fi
   fi
 
-  # If the local_ip_as_cidr variable is not already in the file, add it
-  response=$(grep local_ip_as_cidr terraform/terraform.tfvars)
-  if [ "$response" == "" ]; then
-    echo "local_ip_as_cidr = \"$this_public_ip/32\"" >> terraform/terraform.tfvars
-  fi 
+  # Remove the old local_ip_as_cidr setting in the file
+  if [ "$this_os" == "MacOS" ]; then
+    sed -i '' '/local_ip_as_cidr/d' terraform/terraform.tfvars
+  else
+    sed -i '/local_ip_as_cidr/d' terraform/terraform.tfvars
+  fi
+
+  # Add the new entry
+  echo "local_ip_as_cidr = \"$this_public_ip/32\"" >> terraform/terraform.tfvars
 
   # Run the terraform commands
   cd terraform
@@ -182,7 +190,7 @@
 
   onprem_ip_address_line=$(grep '^ssh_to_ONPREM_master_node = "ssh ' terraform-apply.out)
   onprem_ip_address=$(echo ${onprem_ip_address_line} | cut -d'@' -f 2 | sed 's/"//g')
-  
+
   # Check if we can successfully SSH into the master nodes
   response=$(ssh -o StrictHostKeyChecking=no hadoop@${onprem_ip_address} "echo sshtrue" &>/tmp/ssh-response.out)
   grep sshtrue /tmp/ssh-response.out &> /dev/null
@@ -230,7 +238,7 @@
 
   cmd="hive -f create-hive-tables.sql"
   ssh -o StrictHostKeyChecking=no hadoop@${onprem_ip_address} ${cmd} &>/dev/null
-  
+
   # Check if Hive tables were created successfully and have data
   cmd="hive -e \"SHOW TABLES;\""
   response=$(ssh -o StrictHostKeyChecking=no hadoop@${onprem_ip_address} ${cmd} 2>/dev/null )
@@ -285,9 +293,13 @@
   # Check to make sure the bucket was created
   aws s3 ls / | grep "${s3_demo_bucket}" &>/dev/null
   if [ "$?" -eq "1" ]; then
-    show_err "Error: Unable to create the demo S3 bucket: ${s3_demo_bucket}."
-    show_err "       Message: $response1"
-    exit_script
+    if [[ "$response1" != *"BucketAlreadyExists"* ]]; then
+         show_msg "S3 Bucket \"${s3_demo_bucket}\" already exists. Using existing bucket"
+    else
+      show_err "Error: Unable to create the demo S3 bucket: ${s3_demo_bucket}."
+      show_err "       Message: $response1"
+      exit_script
+    fi
   fi
 
   # Mount the S3 bucket in Alluxio in the CLOUD cluster
@@ -325,21 +337,8 @@
   ssh -o StrictHostKeyChecking=no hadoop@${cloud_ip_address} ${cmd} &>/dev/null
 
   show_msg ""
-  #show_msg "The demo cluster will remain up for ${TERMINATE_DEMO_HOURS} hours."
-  #echo
-  #show_msg "  To destroy the cluster manually, press Ctrl-C to exit this script"
-
-  # Wait for 2 hours and then destroy the cluster
-  #num_seconds=$((${TERMINATE_DEMO_HOURS}*60))
-  #sleep ${num_seconds}
 
   # finish up the script
-  #echo
-  #show_msg "Running command: terraform destroy -auto-approve"
-  #echo
-  #show_msg "See terraform/terraform-destroy.out for results."
-
-  #terraform destroy -auto-approve > terraform-destroy.out 2>&1
 
   cd ${original_dir}
 
