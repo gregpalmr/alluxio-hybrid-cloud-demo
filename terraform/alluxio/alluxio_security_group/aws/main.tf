@@ -30,15 +30,17 @@ resource "aws_security_group" "emr_managed" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  ingress {
-    description = "SSH"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"]
+  dynamic "ingress" {
+    for_each = length(var.alluxio_web_ui_rule_cidr_blocks) > 0 ? [""] : []
+    content {
+      description = "SSH"
+      from_port   = 22
+      to_port     = 22
+      protocol    = "TCP"
+      cidr_blocks = [element(var.alluxio_web_ui_rule_cidr_blocks,0)]
+    }
   }
 }
-
 
 resource "aws_security_group" "alluxio" {
   count       = var.enabled ? 1 : 0
