@@ -225,11 +225,11 @@
   ssh -o StrictHostKeyChecking=no hadoop@${onprem_ip_address} ${cmd} &>/dev/null
 
   show_msg "Loading store_sales data set"
-  cmd="s3-dist-cp --src s3a://autobots-tpcds-pregenerated-data/spark/unpart_sf100_10k/store_sales/ --dest hdfs:///data/tpcds/store_sales/"
+  cmd="s3-dist-cp --src s3a://greg-palmer-alluxio-public-bucket/data/tpcds/store_sales/ --dest hdfs:///data/tpcds/store_sales/"
   ssh -o StrictHostKeyChecking=no hadoop@${onprem_ip_address} ${cmd} &>/dev/null
 
   show_msg "Loading item data set"
-  cmd=" s3-dist-cp --src s3a://autobots-tpcds-pregenerated-data/spark/unpart_sf100_10k/item/ --dest hdfs:///data/tpcds/item/"
+  cmd=" s3-dist-cp --src s3a://greg-palmer-alluxio-public-bucket/data/tpcds/item/ --dest hdfs:///data/tpcds/item/"
   ssh -o StrictHostKeyChecking=no hadoop@${onprem_ip_address} ${cmd} &>/dev/null
 
   show_msg "Creating hive tables"
