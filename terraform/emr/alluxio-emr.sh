@@ -609,7 +609,7 @@ configure_alluxio_general_properties() {
   # query S3 for canonical ID of user and strip out the quotes
   local -r canonical_id="$(aws s3api list-buckets --query "Owner.ID" | sed "s/\"//g")"
 
-  set_alluxio_property alluxio.user.file.writetype.default "ASYNC_THROUGH"
+  set_alluxio_property alluxio.user.file.writetype.default "CACHE_THROUGH"
   set_alluxio_property alluxio.master.hostname "${master}"
   set_alluxio_property alluxio.master.journal.type "UFS"
   set_alluxio_property alluxio.master.mount.table.root.ufs "${root_ufs_uri}"
